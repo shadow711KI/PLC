@@ -1,4 +1,5 @@
-import express from 'express';
+const PORT = 3001;
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import net from 'net';
 import fs from 'fs';
@@ -6,133 +7,22 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import type { MotorNr, SPSName, SPSConfig, MotorInfo, TimePoint, StatusResponse, AppConfig } from './types';
-import { buildZeitautomatikWriteFrame, buildSPSStatusQueryFrame, parseSPSStatusResponse, querySPSStatus72, logSPSResponse } from './protocol';
+import { buildZeitautomatikWriteFrame, buildSPSStatusQueryFrame, parseSPSStatusResponse, querySPSStatus72, logSPSResponse, logTelegram } from './protocol';
+import { writeZeitautomatikToSPS, readZeitautomatikFromSPS } from './services';
+import { readMotorTimes, writeMotorTimes } from './services';
+import { setZeitautomatikEnabled } from './services';
+import { writeZeitautomatikPoints } from './services';
+
+// --- Express app initialization and middleware setup ---
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const require = createRequire(import.meta.url);
 const { getStatusWord69 } = require('../../sps-statusbyte-helper');
 
-// ES Module: __dirname Alternative (ganz am Anfang!)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const app = express();
-const PORT = 3001;
-
-// Middleware - CORS MUSS vor allen Routen kommen!
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://192.168.178.93:5173'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.use(express.json());
-
-// ...existing code...
-
-// ...existing code...
-
-// ...existing code...
-
-// ...existing code...
-
-// ...existing code...
-
-
-// Hilfsfunktion: Zeitpunkte an SPS schreiben (TCP)
-function writeZeitautomatikToSPS(host: string, port: number, motorNr: MotorNr, points: TimePoint[]): Promise<Buffer | null> {
-  return new Promise((resolve) => {
-    const frame = buildZeitautomatikWriteFrame(motorNr, points);
-    logTelegram('SEND', `ZeitAuto WRITE Motor ${motorNr} → ${host}:${port}`, frame.toString('hex'));
-    const sock = net.createConnection({ host, port });
-    let response = Buffer.alloc(0);
-    let timeoutHandle: NodeJS.Timeout;
-    sock.on('connect', () => { sock.write(frame); });
-    sock.on('data', (data) => { 
-      response = Buffer.concat([response, data]);
-      logTelegram('RECV', `ZeitAuto WRITE Motor ${motorNr} chunk → ${host}:${port}`, data.toString('hex'));
-      logSPSResponse(data.toString('hex'), 'Zeitautomatik WRITE');
-      // Warte auf BEIDE Responses: ACK (5 bytes) + SUCCESS (5 bytes) = mindestens 10 bytes
-      if (response.length >= 10) {
-        clearTimeout(timeoutHandle);
-        sock.destroy();
-        logTelegram('RECV', `ZeitAuto WRITE Motor ${motorNr} komplett → ${host}:${port}`, response.toString('hex'));
-        resolve(response);
-      }
-    });
-    sock.on('end', () => { 
-      clearTimeout(timeoutHandle); 
-      sock.destroy(); 
-      console.log('⚠️ Socket closed, total received:', response.length, 'bytes');
-      resolve(response); 
-    });
-    sock.on('error', () => { clearTimeout(timeoutHandle); resolve(null); });
-    timeoutHandle = setTimeout(() => { 
-      console.log('⏱️ Timeout reached, received:', response.length, 'bytes');
-      sock.destroy(); 
-      resolve(response.length > 0 ? response : null); 
-    }, 250);
-  });
-}
-
-// Hilfsfunktion: Zeitautomatik-Frame für einen Motor bauen (READ)
-// Nach Doku: Für Zeitautomatik sollten Zeitpunkte gelesen werden
-// Verwende Frame für Schaltzeitpunkte 1-6 lesen (aus Doku 8.5)
-function buildZeitautomatikReadFrame(motorNr: MotorNr) {
-  // Frame für 6 Zeitpunkte lesen: 02 16 41 00 00 06 69 07 00 ... 03 [checksum]
-  const STX = 0x02, ETX = 0x03, TYP = 0x41;
-  const STATION = 0x00;
-  const OPCODE = 0x00; // Befehlscode
-  const COUNT = 0x06; // 6 Operanden (Zeitpunkte 1-6)
-  // Dynamisch Adressen für Zeitpunkte berechnen
-  const operands = [];
-  for (let i = 0; i < 6; i++) {
-    const addrHex = getStatusWord69(motorNr, `zeitschaltpunkt${i+1}`);
-    const addr = parseInt(addrHex, 16);
-    operands.push(0x69, addr, 0x00);
-  }
-  const payload = [TYP, STATION, OPCODE, COUNT, ...operands];
-  const len = payload.length;
-  const frameNoCksum = [STX, len, ...payload, ETX];
-  let sum = 0;
-  for (let i = 2; i < frameNoCksum.length - 1; i++) sum += frameNoCksum[i];
-  const ckLow = sum & 0xFF;
-  const ckHigh = (sum >> 8) & 0xFF;
-  const frame = Buffer.from([...frameNoCksum, ckLow, ckHigh]);
-  console.log(`🔧 Zeitautomatik Read Frame für Motor ${motorNr}:`, frame.toString('hex'));
-  return frame;
-}
-
-// Hilfsfunktion: Zeitpunkte von SPS lesen (TCP)
-function readZeitautomatikFromSPS(host: string, port: number, motorNr: MotorNr): Promise<Buffer | null> {
-  return new Promise((resolve) => {
-    const frame = buildZeitautomatikReadFrame(motorNr);
-    const sock = net.createConnection({ host, port, timeout: 250 });
-    let response = Buffer.alloc(0);
-    let timeoutHandle: NodeJS.Timeout;
-    sock.on('connect', () => { 
-      logTelegram('SEND', `ZeitAuto READ Motor ${motorNr} → ${host}:${port}`, frame.toString('hex'));
-      sock.write(frame); 
-    });
-    sock.on('data', (data) => { 
-      response = Buffer.concat([response, data]);
-      logTelegram('RECV', `ZeitAuto READ Motor ${motorNr} chunk → ${host}:${port}`, data.toString('hex'));
-      logSPSResponse(data.toString('hex'), `ZeitAuto READ Motor ${motorNr}`);
-    });
-    sock.on('end', () => { 
-      clearTimeout(timeoutHandle); 
-      sock.destroy(); 
-      logTelegram('RECV', `ZeitAuto READ Motor ${motorNr} komplett → ${host}:${port}`, response.toString('hex'));
-      resolve(response); 
-    });
-    sock.on('error', (err) => { 
-      clearTimeout(timeoutHandle); 
-      resolve(null); 
-    });
-    timeoutHandle = setTimeout(() => { 
-      sock.destroy(); 
-      resolve(response.length > 0 ? response : null); 
-    }, 250);
-  });
-}
+// ...readZeitautomatikFromSPS now imported from services.ts...
 
 // Hilfsfunktion: Zeitpunkte aus SPS-Response parsen (nach Doku 8.5)
 function parseZeitautomatikResponse(buffer: Buffer) {
@@ -268,133 +158,7 @@ function parseZeitautomatikResponse(buffer: Buffer) {
 // ────────────────────────────────────────────────────────────
 // Motor-Laufzeiten / Wendezeit / Antippzeiten (Opcode 0x69, Word)
 // Basierend auf App-Telegrammen (#93-#97) und Zuordnung in sps-statusbyte-helper
-function buildMotorTimesReadFrame(motorNr: number): Buffer {
-  const STX = 0x02, ETX = 0x03, TYP = 0x41;
-  const payload = [TYP, 0x00, 0x00, 0x05]; // station=0, opcode=read(0x00), count=5 words
-  const fields = ['laufzeit_hoch', 'laufzeit_runter', 'antipzeit_hoch', 'antipzeit_runter', 'wendzeit'];
-  for (const field of fields) {
-    const addrHex = getStatusWord69(motorNr, field);
-    const addr = parseInt(addrHex, 16);
-    payload.push(0x69, addr, 0x00);
-  }
-  const len = payload.length;
-  const frameNoCksum = [STX, len, ...payload, ETX];
-  let sum = 0;
-  for (let i = 2; i < frameNoCksum.length - 1; i++) sum += frameNoCksum[i];
-  const ckLow = sum & 0xFF;
-  const ckHigh = (sum >> 8) & 0xFF;
-  return Buffer.from([...frameNoCksum, ckLow, ckHigh]);
-}
-
-function parseMotorTimesResponse(buffer: Buffer) {
-  // Erwartet: optional 5-byte ACK (02 03 40 00 21) + Datenframe
-  if (!buffer || buffer.length < 12) return null;
-
-  let dataFrame = buffer;
-  if (buffer[0] === 0x02 && buffer[1] === 0x03) {
-    dataFrame = buffer.slice(5);
-  }
-
-  // Datenframe: 02 [LEN] 41 00 00 05 <v1low v1high> ... <v5low v5high> 03 [ck]
-  if (dataFrame.length < 6 + (5 * 2) + 3) return null;
-  const count = dataFrame[5];
-  if (count < 5) return null;
-
-  const values: number[] = [];
-  let offset = 6;
-  for (let i = 0; i < 5; i++) {
-    const low = dataFrame[offset];
-    const high = dataFrame[offset + 1];
-    // SPS speichert Zeiten in Zehntelsekunden (0.1s) - konvertiere zu Millisekunden
-    const valueInTenthSeconds = (high << 8) | low;
-    const valueInMilliseconds = valueInTenthSeconds * 100;
-    values.push(valueInMilliseconds);
-    offset += 2;
-  }
-
-  const [laufzeitHoch, laufzeitRunter, antipzeitHoch, antipzeitRunter, wendezeit] = values;
-  return { laufzeitHoch, laufzeitRunter, antipzeitHoch, antipzeitRunter, wendezeit };
-}
-
-function readMotorTimes(host: string, port: number, motorNr: number): Promise<any | null> {
-  return new Promise((resolve) => {
-    const frame = buildMotorTimesReadFrame(motorNr);
-    logTelegram('SEND', `MotorTimes READ Motor ${motorNr} → ${host}:${port}`, frame.toString('hex'));
-    const socket = net.createConnection({ host, port });
-    let response = Buffer.alloc(0);
-    let timeoutHandle: NodeJS.Timeout;
-
-    socket.on('connect', () => socket.write(frame));
-    socket.on('data', (data) => {
-      response = Buffer.concat([response, data]);
-      logTelegram('RECV', `MotorTimes READ Motor ${motorNr} chunk → ${host}:${port}`, data.toString('hex'));
-      logSPSResponse(data.toString('hex'), `MotorTimes READ Motor ${motorNr}`);
-    });
-    socket.on('end', () => {
-      clearTimeout(timeoutHandle);
-      socket.destroy();
-      logTelegram('RECV', `MotorTimes READ Motor ${motorNr} komplett`, response.toString('hex'));
-      resolve(parseMotorTimesResponse(response));
-    });
-    socket.on('error', () => { clearTimeout(timeoutHandle); resolve(null); });
-
-    timeoutHandle = setTimeout(() => { socket.destroy(); resolve(parseMotorTimesResponse(response)); }, 250);
-  });
-}
-
-function buildMotorTimesWriteFrame(motorNr: number, values: { laufzeitHoch: number; laufzeitRunter: number; antipzeitHoch: number; antipzeitRunter: number; wendezeit: number; }): Buffer {
-  const STX = 0x02, ETX = 0x03, TYP = 0x41;
-  const payload = [TYP, 0x00, 0x01, 0x05]; // station=0, opcode=write(0x01), count=5
-  const order: Array<[keyof typeof values, string]> = [
-    ['laufzeitHoch', 'laufzeit_hoch'],
-    ['laufzeitRunter', 'laufzeit_runter'],
-    ['antipzeitHoch', 'antipzeit_hoch'],
-    ['antipzeitRunter', 'antipzeit_runter'],
-    ['wendezeit', 'wendzeit']
-  ];
-
-  for (const [field, mapKey] of order) {
-    const addrHex = getStatusWord69(motorNr, mapKey);
-    const addr = parseInt(addrHex, 16);
-    const val = Math.max(0, Math.min(0xFFFF, values[field] ?? 0));
-    const low = val & 0xFF;
-    const high = (val >> 8) & 0xFF;
-    payload.push(0x69, addr, 0x00, low, high);
-  }
-
-  const len = payload.length;
-  const frameNoCksum = [STX, len, ...payload, ETX];
-  let sum = 0;
-  for (let i = 2; i < frameNoCksum.length - 1; i++) sum += frameNoCksum[i];
-  const ckLow = sum & 0xFF;
-  const ckHigh = (sum >> 8) & 0xFF;
-  return Buffer.from([...frameNoCksum, ckLow, ckHigh]);
-}
-
-function writeMotorTimes(host: string, port: number, motorNr: number, values: { laufzeitHoch: number; laufzeitRunter: number; antipzeitHoch: number; antipzeitRunter: number; wendezeit: number; }) {
-  return new Promise<boolean>((resolve) => {
-    const frame = buildMotorTimesWriteFrame(motorNr, values);
-    logTelegram('SEND', `MotorTimes WRITE Motor ${motorNr} → ${host}:${port}`, frame.toString('hex'));
-    const socket = net.createConnection({ host, port });
-    let responseReceived = false;
-    let timeoutHandle: NodeJS.Timeout;
-
-    socket.on('connect', () => socket.write(frame));
-    socket.on('data', (data) => {
-      responseReceived = true;
-      logTelegram('RECV', `MotorTimes WRITE Motor ${motorNr} chunk → ${host}:${port}`, data.toString('hex'));
-      logSPSResponse(data.toString('hex'), `MotorTimes WRITE Motor ${motorNr}`);
-    });
-    socket.on('error', () => { clearTimeout(timeoutHandle); resolve(false); });
-    socket.on('close', () => {
-      clearTimeout(timeoutHandle);
-      logTelegram('RECV', `MotorTimes WRITE Motor ${motorNr} socket closed`, responseReceived ? 'response=yes' : 'response=no');
-      resolve(responseReceived);
-    });
-
-    timeoutHandle = setTimeout(() => { socket.destroy(); resolve(responseReceived); }, 250);
-  });
-}
+// ...read/write motor times now in services.ts, frame builders/parsers in protocol.ts...
 // Zeitautomatik Speicherpfad
 
 // Export für Testskripte
@@ -411,7 +175,7 @@ try {
 
 // API: Zeitautomatik auslesen (alle Motoren oder einen)
 // API: Zeitautomatik auslesen (direkt von SPS)
-app.get('/api/zeitautomatik', async (req, res) => {
+app.get('/api/zeitautomatik', async (req: Request, res: Response) => {
   const motor = req.query.motor as string | undefined;
   console.log(`🔍 Zeitautomatik-API aufgerufen für Motor: ${motor}`);
   if (!motor) return res.status(400).json({ success: false, message: 'motor erforderlich' });
@@ -420,7 +184,6 @@ app.get('/api/zeitautomatik', async (req, res) => {
   console.log(`🔍 Motor gefunden:`, motorObj ? { name: motorObj.name, technicalName: motorObj.technicalName, sps: motorObj.sps } : 'NICHT GEFUNDEN');
   if (!motorObj) return res.status(404).json({ success: false, message: 'Motor nicht gefunden' });
   // SPS-Info holen
-  const PORT = 3001;
   const sps = motorObj.sps ? spsMapping[motorObj.sps] : undefined;
   console.log(`🔍 SPS gefunden:`, sps ? { host: sps.host, port: sps.port } : 'NICHT GEFUNDEN');
   if (!sps) return res.status(404).json({ success: false, message: 'SPS nicht gefunden' });
@@ -450,7 +213,7 @@ app.get('/api/zeitautomatik', async (req, res) => {
 });
 
 // API: SPS Status abfragen (72-Byte Telegramm)
-app.get('/api/sps/status/:spsName', async (req, res) => {
+app.get('/api/sps/status/:spsName', async (req: Request, res: Response) => {
   console.log('📊 GET /api/sps/status/:spsName aufgerufen');
   const { spsName } = req.params;
   const sps = spsMapping[spsName];
@@ -478,7 +241,7 @@ app.get('/api/sps/status/:spsName', async (req, res) => {
 });
 
 // API: Zeitautomatik Ein/Aus schalten
-app.post('/api/zeitautomatik/enable', async (req, res) => {
+app.post('/api/zeitautomatik/enable', async (req: Request, res: Response) => {
   console.log('🔄 POST /api/zeitautomatik/enable aufgerufen');
   const { motor, enabled } = req.body;
   console.log('🪝 Request payload:', req.body);
@@ -515,50 +278,9 @@ app.post('/api/zeitautomatik/enable', async (req, res) => {
     return res.status(404).json({ success: false, message: 'Motor-Nr nicht gefunden' });
   }
 
-  // Frame bauen: 02 09 41 00 01 01 69 [ADDR] 00 [VALUE] 00 03 [CK]
-  const STX = 0x02, ETX = 0x03, TYP = 0x41;
-  // Use sps-statusbyte-helper for Automatik address calculation
-  const addrHex = getStatusWord69(motorNr, 'autom_ein_aus');
-  const addr = parseInt(addrHex, 16);
-  // PROTOCOL LOGIC: 0x00 = AN (enabled), 0x01 = AUS (disabled)
-  const value = enabled ? 0x00 : 0x01; // 0x00=AN, 0x01=AUS
-
-  const payload = [TYP, 0x00, 0x01, 0x01, 0x69, addr, 0x00, value, 0x00];
-  const len = payload.length;
-  const frameNoCksum = [STX, len, ...payload, ETX];
-
-  let sum = 0;
-  for (let i = 2; i < frameNoCksum.length - 1; i++) sum += frameNoCksum[i];
-  const ckLow = sum & 0xFF;
-  const ckHigh = (sum >> 8) & 0xFF;
-
-  const frame = Buffer.from([...frameNoCksum, ckLow, ckHigh]);
-
-  console.log(`📤 Sende Automatik ${enabled ? 'AN' : 'AUS'} für Motor ${motorNr} (${motorObj.displayName}/${motorObj.technicalName}):`, frame.toString('hex'));
-
-  // Frame an SPS senden
+  // Use service function for Zeitautomatik enable/disable
   try {
-    const success = await new Promise<boolean>((resolve) => {
-      const socket = net.createConnection({ host: sps.host, port: sps.port });
-      let responseReceived = false;
-      let timeoutHandle: NodeJS.Timeout;
-
-      socket.on('connect', () => socket.write(frame));
-      socket.on('data', (data) => {
-        responseReceived = true;
-        logTelegram('RECV', `MotorTimes WRITE Motor ${motorNr} chunk → ${sps.host}:${sps.port}`, data.toString('hex'));
-        logSPSResponse(data.toString('hex'), `MotorTimes WRITE Motor ${motorNr}`);
-      });
-      socket.on('error', () => { clearTimeout(timeoutHandle); resolve(false); });
-      socket.on('close', () => {
-        clearTimeout(timeoutHandle);
-        logTelegram('RECV', `MotorTimes WRITE Motor ${motorNr} socket closed`, responseReceived ? 'response=yes' : 'response=no');
-        resolve(responseReceived);
-      });
-
-      timeoutHandle = setTimeout(() => { socket.destroy(); resolve(responseReceived); }, 250);
-    });
-
+    const success = await setZeitautomatikEnabled(sps.host, sps.port, motorNr, enabled);
     const motorName = motorObj.displayName || motorObj.technicalName || 'Unbekannt';
     if (success) {
       console.log(`✅ Automatik ${enabled ? 'AN' : 'AUS'} erfolgreich für ${motorName}`);
@@ -575,7 +297,7 @@ app.post('/api/zeitautomatik/enable', async (req, res) => {
 
 // API: Zeitautomatik speichern (ein Motor)
 // API: Zeitautomatik speichern (direkt an SPS)
-app.post('/api/zeitautomatik', async (req, res) => {
+app.post('/api/zeitautomatik', async (req: Request, res: Response) => {
   console.log('📝 POST /api/zeitautomatik aufgerufen');
   console.log('📦 Request Body:', JSON.stringify(req.body, null, 2));
   const { motor, points } = req.body;
@@ -608,23 +330,13 @@ app.post('/api/zeitautomatik', async (req, res) => {
   // TCP-Request an SPS
   try {
     console.log('📡 Sende Zeitautomatik-Daten an SPS...');
-    const spsResponse = await writeZeitautomatikToSPS(sps.host, sps.port, motorNr as MotorNr, points);
-    if (spsResponse && Buffer.isBuffer(spsResponse)) {
-      console.log('✓ SPS-Antwort erhalten:', spsResponse.toString('hex'));
+    const ok = await writeZeitautomatikPoints(sps.host, sps.port, motorNr as MotorNr, points, motor, zeitautomatikPath, zeitautomatikData);
+    if (ok) {
+      console.log('✓ Zeitautomatik gespeichert für Motor:', motor);
+      return res.json({ success: true });
     } else {
-      console.log('✓ SPS-Antwort erhalten: (keine Daten)');
+      return res.status(500).json({ success: false, message: 'Fehler bei SPS-Request' });
     }
-    
-    // KRITISCH: Nach WRITE 2-3 Sekunden warten, damit SPS Daten committen kann
-    console.log('⏳ Warte 2 Sekunden, damit SPS Daten speichert...');
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Optional: Response prüfen/parsen
-    // Nach erfolgreichem Schreiben auch im Backend-Store sichern
-    zeitautomatikData.motors[motor] = points;
-    fs.writeFileSync(zeitautomatikPath, JSON.stringify(zeitautomatikData, null, 2), 'utf-8');
-    console.log('✓ Zeitautomatik gespeichert für Motor:', motor);
-    return res.json({ success: true });
   } catch (e) {
     console.error('❌ Fehler bei SPS-Request:', e);
     return res.status(500).json({ success: false, message: 'Fehler bei SPS-Request' });
@@ -896,7 +608,7 @@ function buildAntippFrame(motorNr: number, direction: 'up' | 'down'): Buffer {
 }
 
 // API Routes
-app.post('/api/motor/control', async (req, res) => {
+app.post('/api/motor/control', async (req: Request, res: Response) => {
   try {
     const { motor, action, sps: spsHost, port } = req.body;
     
@@ -1001,7 +713,7 @@ app.post('/api/motor/control', async (req, res) => {
 });
 
 // API: Stufenweises Lamellen-Öffnen/Schließen (mit Prozent)
-app.post('/api/motor/lamellen-stufe', async (req, res) => {
+app.post('/api/motor/lamellen-stufe', async (req: Request, res: Response) => {
   try {
     const { motor, direction, ms } = req.body; // direction: 'up' oder 'down', ms: direkte Wartezeit in Millisekunden
     
@@ -1067,7 +779,7 @@ app.post('/api/motor/lamellen-stufe', async (req, res) => {
 });
 
 // Motor-Laufzeiten/Wendezeit/Antippzeiten lesen
-app.get('/api/motor/times', async (req, res) => {
+app.get('/api/motor/times', async (req: Request, res: Response) => {
   const motorParam = req.query.motor as string | undefined;
   if (!motorParam) return res.status(400).json({ success: false, message: 'motor erforderlich' });
 
@@ -1094,7 +806,7 @@ app.get('/api/motor/times', async (req, res) => {
 });
 
 // Motor-Laufzeiten/Wendezeit/Antippzeiten schreiben
-app.post('/api/motor/times', async (req, res) => {
+app.post('/api/motor/times', async (req: Request, res: Response) => {
   const { motor, laufzeitHoch, laufzeitRunter, antipzeitHoch, antipzeitRunter, wendezeit } = req.body || {};
   if (!motor) return res.status(400).json({ success: false, message: 'motor erforderlich' });
 
@@ -1126,12 +838,12 @@ app.post('/api/motor/times', async (req, res) => {
 });
 
 // Motor-Konfiguration API Endpoint
-app.get('/api/motors/config', (req, res) => {
+app.get('/api/motors/config', (req: Request, res: Response) => {
   res.json(motorConfig);
 });
 
 // Motor-Name aktualisieren
-app.post('/api/motors/update-name', (req, res) => {
+app.post('/api/motors/update-name', (req: Request, res: Response) => {
   try {
     const { technicalName, displayName } = req.body;
     
@@ -1156,7 +868,7 @@ app.post('/api/motors/update-name', (req, res) => {
 });
 
 // Status Query Endpoint - Gibt aktuellen Status aller Motoren zurück
-app.get('/api/motors/status', async (req, res) => {
+app.get('/api/motors/status', async (req: Request, res: Response) => {
   try {
     res.json({ 
       success: true, 
@@ -1171,17 +883,17 @@ app.get('/api/motors/status', async (req, res) => {
 // Raum-Icons API Endpoints
 
 // Liefert die gesamte Raumkonfiguration inkl. Reihenfolge
-app.get('/api/rooms/config', (req, res) => {
+app.get('/api/rooms/config', (req: Request, res: Response) => {
   res.json(roomConfig);
 });
 
 // Liefert nur die Reihenfolge der Räume
-app.get('/api/rooms/order', (req, res) => {
+app.get('/api/rooms/order', (req: Request, res: Response) => {
   res.json({ order: roomConfig.order || [] });
 });
 
 // Setzt die Reihenfolge der Räume
-app.post('/api/rooms/order', express.json(), (req, res) => {
+app.post('/api/rooms/order', express.json(), (req: Request, res: Response) => {
   try {
     const { order } = req.body;
     if (!Array.isArray(order)) {
@@ -1197,7 +909,7 @@ app.post('/api/rooms/order', express.json(), (req, res) => {
   }
 });
 
-app.post('/api/rooms/update-icon', (req, res) => {
+app.post('/api/rooms/update-icon', (req: Request, res: Response) => {
   try {
     const { roomName, icon } = req.body;
     
@@ -1227,19 +939,19 @@ app.post('/api/rooms/update-icon', (req, res) => {
 // Gruppen API Endpoints
 
 // Liefert die gesamte Gruppenkonfiguration inkl. Reihenfolge
-app.get('/api/groups/config', (req, res) => {
+app.get('/api/groups/config', (req: Request, res: Response) => {
   res.json(groupsConfig);
 });
 
 // Liefert nur die Reihenfolge der Gruppen
-app.get('/api/groups/order', (req, res) => {
+app.get('/api/groups/order', (req: Request, res: Response) => {
   res.json({ order: groupsConfig.order || [] });
 });
 
 
 
 // Setzt die Reihenfolge der Gruppen
-app.post('/api/groups/order', express.json(), (req, res) => {
+app.post('/api/groups/order', express.json(), (req: Request, res: Response) => {
   try {
     const { order } = req.body;
     if (!Array.isArray(order)) {
@@ -1256,7 +968,7 @@ app.post('/api/groups/order', express.json(), (req, res) => {
 });
 
 // Erstellt oder aktualisiert eine Gruppe
-app.post('/api/groups/update', express.json(), (req, res) => {
+app.post('/api/groups/update', express.json(), (req: Request, res: Response) => {
   try {
     const { groupName, windows } = req.body;
     
@@ -1281,7 +993,7 @@ app.post('/api/groups/update', express.json(), (req, res) => {
 });
 
 // Löscht eine Gruppe
-app.delete('/api/groups/:groupName', (req, res) => {
+app.delete('/api/groups/:groupName', (req: Request, res: Response) => {
   try {
     const { groupName } = req.params;
     
@@ -1384,7 +1096,7 @@ function parseSPSAutomatikResponse(buffer: Buffer) {
 }
 
 // GET /api/sps/automatiken/:spsName - Liest alle Automatiken einer SPS
-app.get('/api/sps/automatiken/:spsName', async (req, res) => {
+app.get('/api/sps/automatiken/:spsName', async (req: Request, res: Response) => {
   console.log('📊 GET /api/sps/automatiken/:spsName aufgerufen');
   const { spsName } = req.params;
   
@@ -1448,7 +1160,7 @@ app.get('/api/sps/automatiken/:spsName', async (req, res) => {
 });
 
 // POST /api/sps/automatiken/toggle - Schaltet eine Automatik
-app.post('/api/sps/automatiken/toggle', async (req, res) => {
+app.post('/api/sps/automatiken/toggle', async (req: Request, res: Response) => {
   console.log('🔄 POST /api/sps/automatiken/toggle aufgerufen');
   const { spsName, type, value } = req.body;
   
@@ -1533,7 +1245,7 @@ app.post('/api/sps/automatiken/toggle', async (req, res) => {
 });
 
 // GET /api/sps/sync-time - Sendet aktuelle Zeit an alle SPSsen
-app.get('/api/sps/sync-time', async (req, res) => {
+app.get('/api/sps/sync-time', async (req: Request, res: Response) => {
   console.log('🕐 GET /api/sps/sync-time aufgerufen');
   
   try {
@@ -1614,7 +1326,7 @@ app.get('/api/sps/sync-time', async (req, res) => {
 });
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
