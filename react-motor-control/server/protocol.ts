@@ -1,3 +1,80 @@
+// Motor-Laufzeiten / Wendezeit / Antippzeiten Frame-Builder und Parser
+import { getStatusWord69 } from '../../sps-statusbyte-helper';
+
+export function buildMotorTimesReadFrame(motorNr: number): Buffer {
+  const STX = 0x02, ETX = 0x03, TYP = 0x41;
+  const payload = [TYP, 0x00, 0x00, 0x05]; // station=0, opcode=read(0x00), count=5 words
+  const fields = ['laufzeit_hoch', 'laufzeit_runter', 'antipzeit_hoch', 'antipzeit_runter', 'wendzeit'];
+  for (const field of fields) {
+    const addrHex = getStatusWord69(motorNr, field);
+    const addr = parseInt(addrHex, 16);
+    payload.push(0x69, addr, 0x00);
+  }
+  const len = payload.length;
+  const frameNoCksum = [STX, len, ...payload, ETX];
+  let sum = 0;
+  for (let i = 2; i < frameNoCksum.length - 1; i++) sum += frameNoCksum[i];
+  const ckLow = sum & 0xFF;
+  const ckHigh = (sum >> 8) & 0xFF;
+  return Buffer.from([...frameNoCksum, ckLow, ckHigh]);
+}
+
+export function buildMotorTimesWriteFrame(motorNr: number, values: { laufzeitHoch: number; laufzeitRunter: number; antipzeitHoch: number; antipzeitRunter: number; wendezeit: number; }): Buffer {
+  const STX = 0x02, ETX = 0x03, TYP = 0x41;
+  const payload = [TYP, 0x00, 0x01, 0x05]; // station=0, opcode=write(0x01), count=5
+  const order: Array<[keyof typeof values, string]> = [
+    ['laufzeitHoch', 'laufzeit_hoch'],
+    ['laufzeitRunter', 'laufzeit_runter'],
+    ['antipzeitHoch', 'antipzeit_hoch'],
+    ['antipzeitRunter', 'antipzeit_runter'],
+    ['wendezeit', 'wendzeit']
+  ];
+  for (const [field, mapKey] of order) {
+    const addrHex = getStatusWord69(motorNr, mapKey);
+    const addr = parseInt(addrHex, 16);
+    const val = Math.max(0, Math.min(0xFFFF, values[field] ?? 0));
+    const low = val & 0xFF;
+    const high = (val >> 8) & 0xFF;
+    payload.push(0x69, addr, 0x00, low, high);
+  }
+  const len = payload.length;
+  const frameNoCksum = [STX, len, ...payload, ETX];
+  let sum = 0;
+  for (let i = 2; i < frameNoCksum.length - 1; i++) sum += frameNoCksum[i];
+  const ckLow = sum & 0xFF;
+  const ckHigh = (sum >> 8) & 0xFF;
+  return Buffer.from([...frameNoCksum, ckLow, ckHigh]);
+}
+
+export function parseMotorTimesResponse(buffer: Buffer) {
+  // Erwartet: optional 5-byte ACK (02 03 40 00 21) + Datenframe
+  if (!buffer || buffer.length < 12) return null;
+
+  let dataFrame = buffer;
+  if (buffer[0] === 0x02 && buffer[1] === 0x03) {
+    dataFrame = buffer.slice(5);
+  }
+
+  // Datenframe: 02 [LEN] 41 00 00 05 <v1low v1high> ... <v5low v5high> 03 [ck]
+  if (dataFrame.length < 6 + (5 * 2) + 3) return null;
+  const count = dataFrame[5];
+  if (count < 5) return null;
+
+  const values: number[] = [];
+  let offset = 6;
+  for (let i = 0; i < 5; i++) {
+    const low = dataFrame[offset];
+    const high = dataFrame[offset + 1];
+    // SPS speichert Zeiten in Zehntelsekunden (0.1s) - konvertiere zu Millisekunden
+    const valueInTenthSeconds = (high << 8) | low;
+    const valueInMilliseconds = valueInTenthSeconds * 100;
+    values.push(valueInMilliseconds);
+    offset += 2;
+  }
+
+  const [laufzeitHoch, laufzeitRunter, antipzeitHoch, antipzeitRunter, wendezeit] = values;
+  return { laufzeitHoch, laufzeitRunter, antipzeitHoch, antipzeitRunter, wendezeit };
+}
 // Helper: current time string
 export function nowTime() {
   return new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
