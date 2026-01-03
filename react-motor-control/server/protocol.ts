@@ -109,22 +109,26 @@ export function querySPSStatus72(
 ): Promise<Record<number, { status: string; automatik?: boolean }> | null> {
     return new Promise((resolve) => {
         const frame = buildSPSStatusQueryFrame(port);
-        // logTelegram is not moved, so comment out or reimplement if needed
-        // logTelegram('SEND', `StatusQuery → ${host}:${port}`, frame.toString('hex'));
         const socket = net.createConnection({ host, port, timeout: 3000 });
         let response = Buffer.alloc(0);
         let timeoutHandle: NodeJS.Timeout;
+        let finished = false;
+
+        function finish(result: any) {
+            if (finished) return;
+            finished = true;
+            try { socket.destroy(); } catch (e) { }
+            setTimeout(() => resolve(result), 200); // 200ms Delay nach Socket-Schließung
+        }
+
         socket.on('connect', () => {
             socket.write(frame);
         });
         socket.on('data', (data) => {
             response = Buffer.concat([response, data]);
-            // logTelegram('RECV', `StatusQuery → ${host}:${port} chunk`, data.toString('hex'));
         });
         socket.on('end', () => {
             clearTimeout(timeoutHandle);
-            socket.destroy();
-            // logTelegram('RECV', `StatusQuery → ${host}:${port} komplett`, response.toString('hex'));
             let spsName: string | undefined = undefined;
             for (const key of Object.keys(spsMapping)) {
                 if (spsMapping[key].host === host && spsMapping[key].port === port) {
@@ -133,24 +137,24 @@ export function querySPSStatus72(
                 }
             }
             const parsed = parseSPSStatusResponse(response, spsName, spsMapping);
-            resolve(parsed);
+            finish(parsed);
         });
         socket.on('error', (err) => {
             clearTimeout(timeoutHandle);
-            // console.error('❌ Status-Query Fehler:', err.message);
-            resolve(null);
+            finish(null);
         });
         timeoutHandle = setTimeout(() => {
-            socket.destroy();
-            let spsName: string | undefined = undefined;
-            for (const key of Object.keys(spsMapping)) {
-                if (spsMapping[key].host === host && spsMapping[key].port === port) {
-                    spsName = key;
-                    break;
+            finish(response.length > 0 ? (() => {
+                let spsName: string | undefined = undefined;
+                for (const key of Object.keys(spsMapping)) {
+                    if (spsMapping[key].host === host && spsMapping[key].port === port) {
+                        spsName = key;
+                        break;
+                    }
                 }
-            }
-            resolve(response.length > 0 ? parseSPSStatusResponse(response, spsName, spsMapping) : null);
-        }, 250);
+                return parseSPSStatusResponse(response, spsName, spsMapping);
+            })() : null);
+        }, 300);
     });
 }
 // Parse SPS Status-Query Response
@@ -183,14 +187,14 @@ export function parseSPSStatusResponse(
         if (posOffset + 1 < dataFrame.length) {
             const b1 = dataFrame[posOffset];
             const b2 = dataFrame[posOffset + 1];
-            if ((b1 & 0x0F) === 0x00 && (b2 & 0x0F) === 0x00) {
-                status = 'stop';
-            } else if ((b1 & 0x0F) === 0x04 && (b2 & 0x0F) === 0x00) {
+            if (b1 === 0x01 && b2 === 0x00) {
                 status = 'hoch';
-            } else if ((b1 & 0x0F) === 0x00 && (b2 & 0x0F) === 0x01) {
+            } else if (b1 === 0x00 && b2 === 0x01) {
                 status = 'runter';
-            } else {
+            } else if (b1 === 0x00 && b2 === 0x00) {
                 status = 'stop';
+            } else {
+                status = 'unbekannt';
             }
             let automOffset = 18 + ((motorNr - 1) * 2);
             if (automOffset < dataFrame.length) {

@@ -75,16 +75,25 @@ function MotorList({ onAction }: MotorListProps) {
         const res = await fetch(`${API_BASE_URL}/api/sps/status/${spsName}`);
         const data = await res.json();
         if (data.success && data.data) {
+          // Logge das empfangene Objekt vom Backend
+          console.log(`[fetchAllSpsStatus] data.data von Backend (${spsName}):`, JSON.stringify(data.data));
           const spsMotorMap = data.data;
+          // Debug: technicalNames aus motors und aus data.data loggen
+          const frontendNames = motors.map(m => m.technicalName);
+          const backendNames = Object.keys(spsMotorMap);
+          console.log(`[fetchAllSpsStatus] technicalNames Frontend:`, frontendNames);
+          console.log(`[fetchAllSpsStatus] technicalNames Backend:`, backendNames);
+
+          // Test: Übernehme ALLE Statuswerte ohne Filter
           for (const [technicalName, statusObjRaw] of Object.entries(spsMotorMap)) {
             const statusObj = statusObjRaw as { status: string };
-            if (motors.some((m) => m.technicalName === technicalName)) {
-              allStatus[technicalName] = statusObj.status;
-            }
+            allStatus[technicalName] = statusObj.status;
           }
         }
       }
       setRealMotorStatus(allStatus);
+      // Logge explizit das Status-Objekt nach dem Setzen
+      console.log('[fetchAllSpsStatus] allStatus (wird in State gesetzt):', JSON.stringify(allStatus));
       if (!statusLoaded) setStatusLoaded(true);
       console.log('SPS Status received:', allStatus, '| reason:', reason, '| stack:', getShortStack());
     } catch (e) {
@@ -93,11 +102,35 @@ function MotorList({ onAction }: MotorListProps) {
   }, [motors, statusLoaded]);
 
   // On mount, fetch status once (not on every motors change)
+
+  // Initialstatus-Refetch: State-gesteuert, reagiert auf realMotorStatus
+  const [initStatusTries, setInitStatusTries] = useState(0);
+
   useEffect(() => {
+    // Nur beim Mount: initialen Status laden
     console.log('[MotorList] useEffect[] triggered - initial mount | stack:', getShortStack());
     fetchAllSpsStatus('mount');
+    setInitStatusTries(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // Prüfe nach jedem Status-Update, ob noch ein Refetch nötig ist
+    if (initStatusTries === 0 || initStatusTries >= 5) return;
+    const hasUnknown = Object.values(realMotorStatus).some(
+      (status) => !status || status === 'unbekannt' || status === '◇'
+    );
+    if (hasUnknown) {
+      // Noch unvollständig: nach 500ms erneut versuchen
+      const timeout = setTimeout(() => {
+        console.log(`[MotorList] Initialstatus unvollständig, Refetch-Versuch ${initStatusTries + 1}`);
+        fetchAllSpsStatus(`delayed-initial-${initStatusTries + 1}`);
+        setInitStatusTries(t => t + 1);
+      }, 500);
+      return () => clearTimeout(timeout);
+    }
+    // Sobald ein valider Status da ist, keine weiteren Versuche
+  }, [realMotorStatus, initStatusTries, fetchAllSpsStatus]);
 
 
   useEffect(() => {
@@ -199,7 +232,10 @@ function MotorList({ onAction }: MotorListProps) {
     if (status === 'hoch') return '△';
     if (status === 'runter') return '▽';
     if (status === 'stop') return '▢';
-    // Fallback
+    // Fallback: Logge den tatsächlichen Wert
+    if (status !== undefined) {
+      console.warn('[StatusIcon] Unerwarteter Statuswert im Frontend:', motor.technicalName, '| Wert:', status);
+    }
     return '□';
   }, [realMotorStatus, statusLoaded])
 
