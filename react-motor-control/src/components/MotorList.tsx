@@ -261,8 +261,18 @@ function MotorList({ onAction }: MotorListProps) {
               >
                 <div className="room-icon" aria-hidden="true">{room.icon}</div>
                 <div className="room-name">{room.name}</div>
-                <div className="room-status-icon" style={{ color: '#2196f3', fontSize: '1em' }} aria-hidden="true">
-                  {['△', '▽', '▢'].includes(roomStatus) ? roomStatus : ''}
+                <div
+                  className="room-status-icon"
+                  style={{
+                    color: '#2196f3',
+                    fontSize: '1.0em',
+                    fontFamily: 'Segoe UI Symbol, Arial Unicode MS, Noto Sans Symbols, Noto Sans, sans-serif',
+                    transition: 'opacity 0.2s',
+                  }}
+                  aria-hidden="true"
+                >
+                  {/* Immer ein Icon anzeigen, auch wenn Status noch nicht geladen */}
+                  {['△', '▽', '▢'].includes(roomStatus) ? roomStatus : '◇'}
                 </div>
               </div>
             );
@@ -299,8 +309,17 @@ function MotorList({ onAction }: MotorListProps) {
               <div className="tile-header">
                 <div className="motor-name">{motor.displayName}</div>
                 <div className="motor-status" style={{ color: '#2196f3', fontSize: '1.5rem' }}>
-                  <span style={{ color: '#1976d2', fontSize: '1em', fontWeight: 600 }}>
-                    {getStatusIcon(motor)}
+                  <span
+                    style={{
+                      color: '#1976d2',
+                      fontSize: '1.0em',
+                      fontWeight: 600,
+                      fontFamily: 'Segoe UI Symbol, Arial Unicode MS, Noto Sans Symbols, Noto Sans, sans-serif',
+                      transition: 'opacity 0.2s',
+                    }}
+                  >
+                    {/* Immer ein Icon anzeigen, auch wenn Status noch nicht geladen */}
+                    {getStatusIcon(motor) || '◇'}
                   </span>
                 </div>
               </div>
