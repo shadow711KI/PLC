@@ -1,0 +1,45 @@
+{
+  "rooms": {
+    "Arbeiten": {
+      "icon": "🖥️"
+    },
+    "Wohnen Ost": {
+      "icon": "🛋️"
+    },
+    "Gäste": {
+      "icon": "🥂"
+    },
+    "Treppe": {
+      "icon": "🪜"
+    },
+    "Wohnen Süd L": {
+      "icon": "🍽️"
+    },
+    "Wohnen Süd R": {
+      "icon": "🍽️"
+    },
+    "Wohnen West L": {
+      "icon": "🔪"
+    },
+    "Wohnen West R": {
+      "icon": "🔪"
+    }
+  },
+  "order": [
+    "Wohnen Ost",
+    "Wohnen Süd L",
+    "Wohnen Süd R",
+    "Wohnen West L",
+    "Wohnen West R",
+    "Arbeiten",
+    "Treppe",
+    "Bad",
+    "Fitnessraum",
+    "Anna Süd",
+    "Anna West",
+    "Schlafen Ankleide",
+    "Schlafen Süd",
+    "Schlafen Ost",
+    "Gäste"
+  ]
+}

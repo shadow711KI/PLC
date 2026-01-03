@@ -1,0 +1,109 @@
+{
+  "motors": [
+    {
+      "id": 8,
+      "technicalName": "Anna_Sued",
+      "displayName": "Anna Süd",
+      "sps": "SPS2",
+      "type": "rollladen"
+    },
+    {
+      "id": 9,
+      "technicalName": "Anna_West",
+      "displayName": "Anna West",
+      "sps": "SPS2",
+      "type": "jalousie"
+    },
+    {
+      "id": 6,
+      "technicalName": "Arbeiten",
+      "displayName": "Arbeiten",
+      "sps": "SPS1",
+      "type": "jalousie"
+    },
+    {
+      "id": 13,
+      "technicalName": "Bad",
+      "displayName": "Bad",
+      "sps": "SPS3",
+      "type": "rollladen"
+    },
+    {
+      "id": 10,
+      "technicalName": "Fitnessraum",
+      "displayName": "Fitnessraum",
+      "sps": "SPS2",
+      "type": "rollladen"
+    },
+    {
+      "id": 11,
+      "technicalName": "Frida",
+      "displayName": "Gäste",
+      "sps": "SPS2",
+      "type": "rollladen"
+    },
+    {
+      "id": 14,
+      "technicalName": "Schlafen_Ankleide",
+      "displayName": "Schlafen Ankleide",
+      "sps": "SPS3",
+      "type": "rollladen"
+    },
+    {
+      "id": 15,
+      "technicalName": "Schlafen_Osten",
+      "displayName": "Schlafen Ost",
+      "sps": "SPS3",
+      "type": "rollladen"
+    },
+    {
+      "id": 7,
+      "technicalName": "Schlafen_Sued",
+      "displayName": "Schlafen Süd",
+      "sps": "SPS2",
+      "type": "rollladen"
+    },
+    {
+      "id": 12,
+      "technicalName": "Treppe",
+      "displayName": "Treppe",
+      "sps": "SPS2",
+      "type": "jalousie"
+    },
+    {
+      "id": 1,
+      "technicalName": "Wohnen_Ost",
+      "displayName": "Wohnen Ost",
+      "sps": "SPS1",
+      "type": "jalousie"
+    },
+    {
+      "id": 2,
+      "technicalName": "Wohnen_Sued_links",
+      "displayName": "Wohnen Süd L",
+      "sps": "SPS1",
+      "type": "jalousie"
+    },
+    {
+      "id": 3,
+      "technicalName": "Wohnen_Sued_rechts",
+      "displayName": "Wohnen Süd R",
+      "sps": "SPS1",
+      "type": "jalousie"
+    },
+    {
+      "id": 4,
+      "technicalName": "Wohnen_West_links",
+      "displayName": "Wohnen West L",
+      "sps": "SPS1",
+      "type": "jalousie"
+    },
+    {
+      "id": 5,
+      "technicalName": "Wohnen_West_rechts",
+      "displayName": "Wohnen West R",
+      "sps": "SPS1",
+      "type": "jalousie"
+    }
+  ]
+}

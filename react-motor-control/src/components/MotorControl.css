@@ -1,0 +1,141 @@
+.motor-control-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.motor-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.motor-header h2 {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.motor-header p {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.error-message {
+  background: #ffebee;
+  border-left: 4px solid #f44336;
+  padding: 15px;
+  border-radius: 5px;
+  color: #c62828;
+  font-size: 14px;
+}
+
+.status-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.status-item {
+  text-align: center;
+}
+
+.status-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.status-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.control-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.lamellen-buttons {
+  grid-template-columns: 1fr 1fr;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 15px;
+  border: none;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: white;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-up {
+  background: #1aa179;
+}
+
+.btn-up:hover {
+  background: #158a66;
+  transform: scale(1.05);
+}
+
+.btn-stop {
+  background: #0d6efd;
+}
+
+.btn-stop:hover {
+  background: #0b5ed7;
+  transform: scale(1.05);
+}
+
+.btn-down {
+  background: #334155;
+}
+
+.btn-down:hover {
+  background: #1f2937;
+  transform: scale(1.05);
+}
+
+.btn-lamellen-open {
+  background: #66b2ff;
+  color: #0b1e33;
+}
+
+.btn-lamellen-open:hover {
+  background: #4da3ff;
+  transform: scale(1.05);
+}
+
+.btn-lamellen-close {
+  background: #0b1e33;
+}
+
+.btn-lamellen-close:hover {
+  background: #06101d;
+  transform: scale(1.05);
+}
+
+.btn-back {
+  background: #999;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-back:hover {
+  background: #777;
+}

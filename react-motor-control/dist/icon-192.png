@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" fill="#000000" rx="40"/>
+  <g fill="#FFFFFF">
+    <!-- Hoch Pfeil -->
+    <path d="M96 50 L120 74 L108 74 L108 94 L84 94 L84 74 L72 74 Z"/>
+    <!-- Runter Pfeil -->
+    <path d="M96 142 L120 118 L108 118 L108 98 L84 98 L84 118 L72 118 Z"/>
+    <!-- Stop Quadrat -->
+    <rect x="76" y="76" width="40" height="40" fill="#FF6B00"/>
+  </g>
+</svg>

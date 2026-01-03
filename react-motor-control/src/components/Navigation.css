@@ -1,0 +1,48 @@
+.navigation {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  padding: 15px 20px;
+  background: #000;
+  border-top: 1px solid #333;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  padding: 10px;
+  transition: all 0.3s;
+  flex: 1;
+  border-radius: 10px;
+  color: #888;
+}
+
+.nav-btn:hover {
+  background: rgba(100, 100, 100, 0.1);
+  transform: scale(1.1);
+  color: #aaa;
+}
+
+.nav-btn.active {
+  background: rgba(100, 100, 100, 0.2);
+  color: #ccc;
+}
+
+.nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  color: #555;
+}
+
+.nav-btn:disabled:hover {
+  background: none;
+  transform: none;
+  color: #555;
+}

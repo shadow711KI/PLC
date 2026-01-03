@@ -1,0 +1,451 @@
+{
+  "motors": {
+    "Arbeiten": [
+      {
+        "id": 1,
+        "weekdays": [
+          "Fr"
+        ],
+        "weekdayMask": 41,
+        "hour": 8,
+        "minute": 0,
+        "action": "runter",
+        "raw": [
+          128,
+          250,
+          5,
+          1
+        ],
+        "info": ""
+      },
+      {
+        "id": 2,
+        "weekdays": [
+          "Mo"
+        ],
+        "weekdayMask": 2,
+        "hour": 10,
+        "minute": 0,
+        "action": "hoch",
+        "raw": [
+          128,
+          248,
+          37,
+          1
+        ],
+        "info": ""
+      },
+      {
+        "id": 3,
+        "weekdays": [
+          "Di"
+        ],
+        "weekdayMask": 4,
+        "hour": 10,
+        "minute": 0,
+        "action": "hoch",
+        "raw": [
+          128,
+          248,
+          69,
+          1
+        ],
+        "info": ""
+      },
+      {
+        "id": 4,
+        "weekdays": [
+          "Mi"
+        ],
+        "weekdayMask": 8,
+        "hour": 10,
+        "minute": 0,
+        "action": "hoch",
+        "raw": [
+          128,
+          248,
+          133,
+          1
+        ],
+        "info": ""
+      },
+      {
+        "id": 5,
+        "weekdays": [
+          "Di"
+        ],
+        "weekdayMask": 4,
+        "hour": 10,
+        "minute": 0,
+        "action": "hoch",
+        "raw": [
+          128,
+          248,
+          69,
+          1
+        ],
+        "info": ""
+      },
+      {
+        "id": 6,
+        "weekdays": [
+          "Fr"
+        ],
+        "weekdayMask": 32,
+        "hour": 10,
+        "minute": 0,
+        "action": "hoch",
+        "raw": [
+          128,
+          250,
+          5,
+          1
+        ],
+        "info": ""
+      }
+    ],
+    "Wohnen_Ost": [
+      {
+        "id": 1,
+        "weekdays": [
+          "Sa",
+          "Fr",
+          "Do",
+          "Mi",
+          "Di",
+          "Mo"
+        ],
+        "weekdayMask": 126,
+        "hour": 9,
+        "minute": 0,
+        "action": "hoch",
+        "raw": [
+          128,
+          255,
+          228,
+          129
+        ],
+        "info": ""
+      },
+      {
+        "id": 2,
+        "weekdays": [
+          "Fr",
+          "Do",
+          "Mi",
+          "Di",
+          "Mo"
+        ],
+        "weekdayMask": 62,
+        "hour": 17,
+        "minute": 30,
+        "action": "runter",
+        "raw": [
+          128,
+          251,
+          232,
+          188
+        ],
+        "info": ""
+      },
+      {
+        "id": 3,
+        "weekdays": [
+          "Sa",
+          "So"
+        ],
+        "weekdayMask": 65,
+        "hour": 10,
+        "minute": 0,
+        "action": "hoch",
+        "raw": [
+          128,
+          252,
+          21,
+          1
+        ],
+        "info": ""
+      },
+      {
+        "id": 4,
+        "weekdays": [
+          "Sa",
+          "So"
+        ],
+        "weekdayMask": 65,
+        "hour": 17,
+        "minute": 0,
+        "action": "runter",
+        "raw": [
+          128,
+          252,
+          24,
+          128
+        ],
+        "info": ""
+      },
+      {
+        "id": 5,
+        "weekdays": [
+          "So"
+        ],
+        "weekdayMask": 1,
+        "hour": 8,
+        "minute": 30,
+        "action": "runter",
+        "raw": [
+          128,
+          248,
+          20,
+          60
+        ],
+        "info": ""
+      },
+      {
+        "id": 6,
+        "weekdays": [
+          "So"
+        ],
+        "weekdayMask": 1,
+        "hour": 21,
+        "minute": 30,
+        "action": "runter",
+        "raw": [
+          128,
+          248,
+          26,
+          188
+        ],
+        "info": ""
+      }
+    ],
+    "Treppe": [
+      {
+        "id": 1,
+        "weekdays": [
+          "Fr",
+          "Do",
+          "Mi",
+          "Di",
+          "Mo"
+        ],
+        "weekdayMask": 62,
+        "hour": 8,
+        "minute": 30,
+        "action": "hoch",
+        "raw": [
+          128,
+          251,
+          228,
+          61
+        ],
+        "info": ""
+      },
+      {
+        "id": 2,
+        "weekdays": [
+          "Fr",
+          "Do",
+          "Mi",
+          "Di",
+          "Mo"
+        ],
+        "weekdayMask": 62,
+        "hour": 21,
+        "minute": 30,
+        "action": "runter",
+        "raw": [
+          128,
+          251,
+          234,
+          188
+        ],
+        "info": ""
+      },
+      {
+        "id": 3,
+        "weekdays": [
+          "Sa",
+          "So"
+        ],
+        "weekdayMask": 65,
+        "hour": 9,
+        "minute": 30,
+        "action": "hoch",
+        "raw": [
+          128,
+          252,
+          20,
+          189
+        ],
+        "info": ""
+      },
+      {
+        "id": 4,
+        "weekdays": [
+          "Sa",
+          "So"
+        ],
+        "weekdayMask": 65,
+        "hour": 22,
+        "minute": 0,
+        "action": "runter",
+        "raw": [
+          128,
+          252,
+          27,
+          0
+        ],
+        "info": ""
+      },
+      {
+        "id": 5,
+        "weekdays": [
+          "So"
+        ],
+        "weekdayMask": 1,
+        "hour": 8,
+        "minute": 30,
+        "action": "runter",
+        "raw": [
+          128,
+          248,
+          20,
+          60
+        ],
+        "info": ""
+      },
+      {
+        "id": 6,
+        "weekdays": [
+          "So"
+        ],
+        "weekdayMask": 1,
+        "hour": 21,
+        "minute": 30,
+        "action": "runter",
+        "raw": [
+          128,
+          248,
+          26,
+          188
+        ],
+        "info": ""
+      }
+    ],
+    "Wohnen_Sued_links": [
+      {
+        "id": 1,
+        "weekdays": [
+          "Fr",
+          "Do",
+          "Mi",
+          "Di",
+          "Mo"
+        ],
+        "weekdayMask": 62,
+        "hour": 10,
+        "minute": 0,
+        "action": "hoch",
+        "raw": [
+          128,
+          251,
+          229,
+          1
+        ],
+        "info": ""
+      },
+      {
+        "id": 2,
+        "weekdays": [
+          "Fr",
+          "Do",
+          "Mi",
+          "Di",
+          "Mo"
+        ],
+        "weekdayMask": 127,
+        "hour": 10,
+        "minute": 3,
+        "action": "runter",
+        "raw": [
+          128,
+          251,
+          232,
+          188
+        ],
+        "info": ""
+      },
+      {
+        "id": 3,
+        "weekdays": [
+          "Sa",
+          "So"
+        ],
+        "weekdayMask": 127,
+        "hour": 11,
+        "minute": 0,
+        "action": "hoch",
+        "raw": [
+          128,
+          252,
+          21,
+          1
+        ],
+        "info": ""
+      },
+      {
+        "id": 4,
+        "weekdays": [
+          "Sa",
+          "So"
+        ],
+        "weekdayMask": 65,
+        "hour": 17,
+        "minute": 0,
+        "action": "runter",
+        "raw": [
+          128,
+          252,
+          24,
+          128
+        ],
+        "info": ""
+      },
+      {
+        "id": 5,
+        "weekdays": [
+          "So"
+        ],
+        "weekdayMask": 1,
+        "hour": 8,
+        "minute": 30,
+        "action": "runter",
+        "raw": [
+          128,
+          248,
+          20,
+          60
+        ],
+        "info": ""
+      },
+      {
+        "id": 6,
+        "weekdays": [
+          "So"
+        ],
+        "weekdayMask": 1,
+        "hour": 21,
+        "minute": 30,
+        "action": "runter",
+        "raw": [
+          128,
+          248,
+          26,
+          188
+        ],
+        "info": ""
+      }
+    ]
+  }
+}

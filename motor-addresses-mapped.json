@@ -1,0 +1,74 @@
+{
+  "Wohnen_Ost": {
+    "frame": "02084100010148020001038E00",
+    "time": "15:42:14",
+    "opcode": "01",
+    "befehl": "48",
+    "addrLow": "00",
+    "addrHigh": "01",
+    "frameLength": 26,
+    "fullHex": "02084100010148020001038E00",
+    "motorop": "48",
+    "status": "02"
+  },
+  "Wohnen_Sued_links": {
+    "frame": "02084100010148120001039E00",
+    "time": "15:42:20",
+    "opcode": "01",
+    "befehl": "48",
+    "addrLow": "00",
+    "addrHigh": "01",
+    "frameLength": 26,
+    "fullHex": "02084100010148120001039E00",
+    "motorop": "48",
+    "status": "12"
+  },
+  "Wohnen_Sued_rechts": {
+    "frame": "0208410001014822000103AE00",
+    "time": "15:42:26",
+    "opcode": "01",
+    "befehl": "48",
+    "addrLow": "00",
+    "addrHigh": "01",
+    "frameLength": 26,
+    "fullHex": "0208410001014822000103AE00",
+    "motorop": "48",
+    "status": "22"
+  },
+  "Wohnen_West_links": {
+    "frame": "0208410001014832000103BE00",
+    "time": "15:42:30",
+    "opcode": "01",
+    "befehl": "48",
+    "addrLow": "00",
+    "addrHigh": "01",
+    "frameLength": 26,
+    "fullHex": "0208410001014832000103BE00",
+    "motorop": "48",
+    "status": "32"
+  },
+  "Wohnen_West_rechts": {
+    "frame": "0208410001014842000103CE00",
+    "time": "15:42:35",
+    "opcode": "01",
+    "befehl": "48",
+    "addrLow": "00",
+    "addrHigh": "01",
+    "frameLength": 26,
+    "fullHex": "0208410001014842000103CE00",
+    "motorop": "48",
+    "status": "42"
+  },
+  "Arbeiten": {
+    "frame": "0208410001014852000103DE00",
+    "time": "15:42:40",
+    "opcode": "01",
+    "befehl": "48",
+    "addrLow": "00",
+    "addrHigh": "01",
+    "frameLength": 26,
+    "fullHex": "0208410001014852000103DE00",
+    "motorop": "48",
+    "status": "52"
+  }
+}

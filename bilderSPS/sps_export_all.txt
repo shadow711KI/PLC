@@ -1,0 +1,2548 @@
+
+==== PAGE 1 ====
+FBD-TITEL
+I 01
+Taster hoch
+I 02
+Taster runter
+I 03
+I 04
+I 05
+I 06
+I 07
+Taster hoch
+Taster runter
+B168
+ONDelay(100ms):
+###/1001
+OFFDelay(100ms):
+###/5648
+Beschattung akti
+28.12.2025
+ 12:11
+Beschattung akti
+28.12.2025
+ 12:11
+Beschatt. Uhr
+28.12.2025
+ 12:11
+Roll. verfahren
+28.12.2025
+ 12:11
+Roll. verfahren
+28.12.2025
+ 12:11
+Roll. verfahren
+28.12.2025
+ 12:11
+FBD   page 1 of 9
+
+==== PAGE 2 ====
+User
+Func
+User
+Func
+User
+Func
+B32Beschattung akti
+28.12.2025
+B33Beschattung akti
+28.12.2025
+ 12:11
+B31Beschatt. Uhr
+28.12.2025
+B01Roll. verfahren
+28.12.2025
+B02Roll. verfahren
+28.12.2025
+ 12:11
+B03Roll. verfahren
+FBD   page 2 of 9
+
+==== PAGE 3 ====
+O 01
+Motor hoch
+O 02
+Motor runter
+O 03
+O 04
+O 05
+O 06
+Motor hoch
+Motor runter
+F11
+F03
+F02
+FBD   page 3 of 9
+
+==== PAGE 4 ====
+I 08
+I 09
+I 10
+I 11
+I 12
+I 13
+Zentral hoch
+I 14
+Zentral Runter
+Zentral hoch
+Zentral Runter
+B191freie Schaltuhr
+28.12.2025
+ 12:11
+Beschatt. Autom.
+User
+Func
+Zentral-Dämmerun
+B61Wind Sperre umge
+ONDelay(100ms):
+###/45
+Beschattung akti
+28.12.2025
+ 12:11
+Beschattung akti
+28.12.2025
+ 12:11
+Beschattung akti
+28.12.2025
+ 12:11
+Roll. verfahren
+28.12.2025
+ 12:11
+B05Roll. verfahren
+28.12.2025
+ 12:11
+Roll. verfahren
+28.12.2025
+ 12:11
+B10Roll. verfahren
+28.12.2025
+ 12:11
+FBD   page 4 of 9
+
+==== PAGE 5 ====
+Beschatt. Autom.
+User
+Func
+F24
+User
+Func
+User
+Func
+F19
+F01Zentral-Dämmerun
+B34Beschattung akti
+28.12.2025
+ 12:11
+B35Beschattung akti
+28.12.2025
+B36Beschattung akti
+28.12.2025
+B04Roll. verfahren
+28.12.2025
+B06Roll. verfahren
+FBD   page 5 of 9
+
+==== PAGE 6 ====
+O 08
+O 09
+EO 01
+EO 02
+EO 03
+EO 04
+O 07
+F15
+F19
+FBD   page 6 of 9
+
+==== PAGE 7 ====
+I 15
+User
+Func
+B148
+B10- B1-6
+Bes-
+Däm-
+Syn-
+B150
+B103
+B105Regen Bechattung
+ONDelay(100ms):
+###/60
+B86Besch. Ein Aus
+Count: ###/1
+K08
+B20Schaltzeitpunkte
+28.12.2025
+ 12:11
+FBD   page 7 of 9
+
+==== PAGE 8 ====
+User
+Func
+F59
+B151
+#####
+FBD   page 8 of 9
+
+==== PAGE 9 ====
+FBD   page 9 of 9
+
+==== PAGE 10 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Beschatt. Autom.
+Ip02
+Roll. verfahren
+Ip03
+Zentral hoch
+Ip04
+Zentral Runter
+Ip05
+Ip06
+Schaltzeitpunkte
+B152
+#####
+Zufallsgenerator
+B81dämm- ein- aus-
+Count: ###/1
+B70sperrt Dämmerung
+28.12.2025
+ 12:11
+B60überbrückt Dämme
+28.12.2025
+ 12:11
+M08
+Beschatt. Autom.
+Roll. verfahren
+Zentral hoch
+Zentral Runter
+Schaltzeitpunkte
+B15B10 ein- aus- zu
+Count: ###/2
+SUB FBD F01    page 1 of 6
+
+==== PAGE 11 ====
+B153
+#####
+B154B1-6 ein- aus-
+Count: ###/1
+B118 = NOT B154 OR M
+08 OR I06 
+User
+Func
+F08Zufallsgenerator
+B82bollen
+B82 = ( B85 AND B14 
+) OR B17 OR I03 
+B83boolen
+B83 = ( B84 AND B14 
+) OR B16 OR I04 
+B84
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B85
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+M08
+B17
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/30
+B18
+B16
+Delay Time(1s) :
+###/2
+OneShotTime :
+###/3
+B13
+B13 = NOT B81 OR B70
+ OR M08 
+B14
+Data: Ist.Zähler
+Small: 1
+Large: 2
+SUB FBD F01    page 2 of 6
+
+==== PAGE 12 ====
+Op02
+Op03
+Op01
+Op04
+Op05
+B155
+#####
+B118
+B118 = NOT B154 OR M
+08 OR I06 
+B12
+#####
+SUB FBD F01    page 3 of 6
+
+==== PAGE 13 ====
+SUB FBD F01    page 4 of 6
+
+==== PAGE 14 ====
+SUB FBD F01    page 5 of 6
+
+==== PAGE 15 ====
+SUB FBD F01    page 6 of 6
+
+==== PAGE 16 ====
+FBD-TITEL
+FBD-TITEL
+Ip02
+Ip03
+Zentral-Dämmerun
+Ip04
+Zentral-Dämmerun
+Ip05
+Roll. verfahren
+Ip06
+Zentral-Dämmerun
+Ip07
+Beschattung akti
+Ip08
+Beschatt. Autom.
+Ip09
+Besch. Ein Aus
+Ip10
+Wind Sperre umgeIp01
+User
+Func
+F09sperren
+M08
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+Zentral-Dämmerun
+Zentral-Dämmerun
+Roll. verfahren
+Zentral-Dämmerun
+Beschattung akti
+Beschatt. Autom.
+Besch. Ein Aus
+Wind Sperre umge
+B37
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B39
+B42
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B43
+ONTime(100ms) :
+###/21
+OFFTime(100ms) :
+###/1
+Option : Cycle
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B30
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+SUB FBD F02    page 1 of 6
+
+==== PAGE 17 ====
+User
+Func
+F06
+B48
+Delay Time(100ms) :
+OneShotTime :
+B38
+B40boolen
+B40 = ( I03 OR B42 O
+R B30 ) AND NOT F09 
+B41boolen
+B41 = ( I04 OR B43 O
+R B37 ) AND NOT F09 
+B44
+B45
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+SUB FBD F02    page 2 of 6
+
+==== PAGE 18 ====
+Op02
+Op03
+Op01
+SUB FBD F02    page 3 of 6
+
+==== PAGE 19 ====
+Ip10
+Ip11
+SUB FBD F02    page 4 of 6
+
+==== PAGE 20 ====
+SUB FBD F02    page 5 of 6
+
+==== PAGE 21 ====
+SUB FBD F02    page 6 of 6
+
+==== PAGE 22 ====
+FBD-TITEL
+FBD-TITEL
+Ip04
+Zentral-Dämmerun
+Ip05
+Roll. verfahren
+Ip06
+Zentral-Dämmerun
+Ip07
+Beschatt. Uhr
+Ip08
+Beschatt. Autom.
+Ip09
+Besch. Ein Aus
+Ip10
+Wind Sperre umgeIp01
+Taster hoch
+Ip02
+Taster runter
+Ip03
+Zentral-Dämmerun
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B116
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B117
+ONTime(100ms) :
+###/21
+OFFTime(100ms) :
+###/1
+Option : Cycle
+User
+Func
+F05sperren
+B89
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B90
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B92
+Zentral-Dämmerun
+Roll. verfahren
+Zentral-Dämmerun
+Beschatt. Uhr
+Beschatt. Autom.
+Besch. Ein Aus
+Wind Sperre umge
+Taster hoch
+Taster runter
+Zentral-Dämmerun
+M08
+SUB FBD F03    page 1 of 6
+
+==== PAGE 23 ====
+B192
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B134
+B135
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B114boolen
+B114 = ( I03 OR B116
+ OR B89 ) AND NOT F0
+5 
+B115boolen
+B115 = ( I04 OR B117
+ OR B90 ) AND NOT F0
+5 
+User
+Func
+F04
+B91
+SUB FBD F03    page 2 of 6
+
+==== PAGE 24 ====
+Op01
+Motor hoch
+Op02
+Motor runter
+Op03
+Motor hoch
+Motor runter
+SUB FBD F03    page 3 of 6
+
+==== PAGE 25 ====
+Ip10
+Ip11
+SUB FBD F03    page 4 of 6
+
+==== PAGE 26 ====
+SUB FBD F03    page 5 of 6
+
+==== PAGE 27 ====
+SUB FBD F03    page 6 of 6
+
+==== PAGE 28 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Wind Sperre umge
+Wind Sperre umge
+B54
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+B55
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+SUB FBD F04    page 1 of 3
+
+==== PAGE 29 ====
+B196
+B196 = B54 OR ( F10 
+AND B63 ) 
+ User
+Func
+F10Wendeautomatik
+B52
+B52 = ( I01 OR B54 O
+R F10 ) AND NOT B47 
+B53
+B53 = ( I02 OR B55 )
+ AND NOT B46 AND NOT
+ I03 
+B56
+Prior = RESET
+B63
+Prior = RESET
+B46nicht löschen, v
+OFFDelay(100ms):
+###/5
+B47nicht löschen, v
+OFFDelay(100ms):
+###/5
+SUB FBD F04    page 2 of 3
+
+==== PAGE 30 ====
+Op01
+Motor hoch
+Op02
+Motor runter
+Op03
+Op04
+Motor hoch
+Motor runter
+SUB FBD F04    page 3 of 3
+
+==== PAGE 31 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+B171
+Count: ###/1
+boolen
+SUB FBD F05    page 1 of 2
+
+==== PAGE 32 ====
+Op01
+boolen
+Op02
+boolen
+SUB FBD F05    page 2 of 2
+
+==== PAGE 33 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Wind Sperre umge
+Wind Sperre umge
+B24
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+B25
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+SUB FBD F06    page 1 of 3
+
+==== PAGE 34 ====
+User
+Func
+F07Wendeautomatik
+B19nicht löschen, v
+OFFDelay(100ms):
+###/5
+B21nicht löschen, v
+OFFDelay(100ms):
+###/5
+B22
+B22 = ( I01 OR B24 O
+R F07 ) AND NOT B21 
+B23
+B23 = ( I02 OR B25 )
+ AND NOT B19 AND NOT
+ I03 
+B26
+Prior = RESET
+B27
+Prior = RESET
+B28
+B28 = B24 OR ( F07 A
+ND B27 ) 
+SUB FBD F06    page 2 of 3
+
+==== PAGE 35 ====
+Op01
+Op02
+Op03
+Op04
+SUB FBD F06    page 3 of 3
+
+==== PAGE 36 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Ip04
+ ###/1
+B11
+OFF to ON
+SUB FBD F07    page 1 of 2
+
+==== PAGE 37 ====
+Op01
+Op02
+B08Wendeautomatik F
+Delay Time(100ms) :
+###/10
+OneShotTime :
+###/10
+B09
+SUB FBD F07    page 2 of 2
+
+==== PAGE 38 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+B10 ein- aus- zu
+Ip02
+Roll. verfahren
+Ip03
+Ip04
+B10 ein- aus- zu
+Roll. verfahren
+B80
+B80 = M08 OR NOT I01
+ 
+B76
+UpperThreshold : 2700
+LowerThreshold : 900
+RandomOneShotTime(1s) :
+ 0/0 
+B78
+UpperThreshold : 2700
+LowerThreshold : 900
+RandomOneShotTime(1s) :
+ 0/0 
+B79
+M08
+SUB FBD F08    page 1 of 2
+
+==== PAGE 39 ====
+Op01
+Op02
+B77
+B77 = ( I02 AND NOT 
+I01 ) OR ( ( ( I02 A
+ND NOT B76 ) OR B78 
+) AND I01 ) 
+B78
+UpperThreshold : 2700
+LowerThreshold : 900
+RandomOneShotTime(1s) :
+SUB FBD F08    page 2 of 2
+
+==== PAGE 40 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+B29
+Count: ###/1
+SUB FBD F09    page 1 of 2
+
+==== PAGE 41 ====
+Op01
+Op02
+SUB FBD F09    page 2 of 2
+
+==== PAGE 42 ====
+FBD-TITEL
+FBD-TITEL
+Ip02
+Ip03
+Ip04
+Ip01
+###/1
+B194
+OFF to ON
+SUB FBD F10    page 1 of 2
+
+==== PAGE 43 ====
+Op02
+Op01
+B193
+###/1
+B07Wendeautomatik F
+Delay Time(100ms) :
+###/10
+OneShotTime :
+###/10
+SUB FBD F10    page 2 of 2
+
+==== PAGE 44 ====
+FBD-TITEL
+FBD-TITEL
+Ip04
+Zentral-Dämmerun
+Ip05
+Roll. verfahren
+Ip06
+Zentral-Dämmerun
+Ip07
+Beschattung akti
+Ip08
+Beschatt. Autom.
+Ip09
+Besch. Ein Aus
+Ip10
+Wind Sperre umgeIp01
+Ip02
+Ip03
+Zentral-Dämmerun
+User
+Func
+F14sperren
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B93
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B94
+ONTime(100ms) :
+###/21
+OFFTime(100ms) :
+###/1
+Option : Cycle
+B72
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B73
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B75
+M08
+Zentral-Dämmerun
+Roll. verfahren
+Zentral-Dämmerun
+Beschattung akti
+Beschatt. Autom.
+Besch. Ein Aus
+Wind Sperre umge
+Zentral-Dämmerun
+SUB FBD F11    page 1 of 6
+
+==== PAGE 45 ====
+User
+Func
+F12
+B96
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B97
+Delay Time(100ms) :
+OneShotTime :
+B87boolen
+B87 = ( I03 OR B93 O
+R B72 ) AND NOT F14 
+B88boolen
+B88 = ( I04 OR B94 O
+R B73 ) AND NOT F14 
+B95
+B74
+SUB FBD F11    page 2 of 6
+
+==== PAGE 46 ====
+Op01
+Op02
+Op03
+SUB FBD F11    page 3 of 6
+
+==== PAGE 47 ====
+Ip10
+SUB FBD F11    page 4 of 6
+
+==== PAGE 48 ====
+SUB FBD F11    page 5 of 6
+
+==== PAGE 49 ====
+SUB FBD F11    page 6 of 6
+
+==== PAGE 50 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Wind Sperre umge
+B65
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+B66
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+Wind Sperre umge
+SUB FBD F12    page 1 of 3
+
+==== PAGE 51 ====
+User
+Func
+F13Wendeautomatik
+B64
+B64 = ( I02 OR B66 )
+ AND NOT B57 AND NOT
+ I03 
+B67
+Prior = RESET
+B68
+Prior = RESET
+B69
+B69 = B65 OR ( F13 A
+ND B68 ) 
+B57nicht löschen, v
+OFFDelay(100ms):
+###/5
+B58nicht löschen, v
+OFFDelay(100ms):
+###/5
+B59
+B59 = ( I01 OR B65 O
+R F13 ) AND NOT B58 
+SUB FBD F12    page 2 of 3
+
+==== PAGE 52 ====
+Op01
+Op02
+Op03
+Op04
+SUB FBD F12    page 3 of 3
+
+==== PAGE 53 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Ip04
+ ###/1
+B51
+OFF to ON
+SUB FBD F13    page 1 of 2
+
+==== PAGE 54 ====
+Op01
+Op02
+B49Wendeautomatik F
+Delay Time(100ms) :
+###/10
+OneShotTime :
+###/10
+B50
+SUB FBD F13    page 2 of 2
+
+==== PAGE 55 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+B71
+Count: ###/1
+SUB FBD F14    page 1 of 2
+
+==== PAGE 56 ====
+Op01
+Op02
+SUB FBD F14    page 2 of 2
+
+==== PAGE 57 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Zentral-Dämmerun
+Ip04
+Zentral-Dämmerun
+Ip05
+Roll. verfahren
+Ip06
+Zentral-Dämmerun
+Ip07
+Beschattung akti
+Ip08
+Beschatt. Autom.
+Ip09
+Besch. Ein Aus
+Ip10
+Wind Sperre umge
+Zentral-Dämmerun
+Zentral-Dämmerun
+Roll. verfahren
+Zentral-Dämmerun
+Beschattung akti
+Beschatt. Autom.
+Besch. Ein Aus
+Wind Sperre umge
+B128
+ONTime(100ms) :
+###/21
+OFFTime(100ms) :
+###/1
+Option : Cycle
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B121
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B122
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B124
+B127
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+User
+Func
+F18sperren
+M08
+SUB FBD F15    page 1 of 6
+
+==== PAGE 58 ====
+B129
+B130
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B131
+Delay Time(100ms) :
+OneShotTime :
+B123
+B125boolen
+B125 = ( I03 OR B127
+ OR B121 ) AND NOT F
+18 
+B126boolen
+B126 = ( I04 OR B128
+ OR B122 ) AND NOT F
+18 
+User
+Func
+F16
+SUB FBD F15    page 2 of 6
+
+==== PAGE 59 ====
+Op01
+Op02
+Op03
+SUB FBD F15    page 3 of 6
+
+==== PAGE 60 ====
+Ip10
+SUB FBD F15    page 4 of 6
+
+==== PAGE 61 ====
+SUB FBD F15    page 5 of 6
+
+==== PAGE 62 ====
+SUB FBD F15    page 6 of 6
+
+==== PAGE 63 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Wind Sperre umge
+Wind Sperre umge
+B110
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+B111
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+SUB FBD F16    page 1 of 3
+
+==== PAGE 64 ====
+B112
+Prior = RESET
+B113
+Prior = RESET
+B119
+B119 = B110 OR ( F17
+ AND B113 ) 
+ User
+Func
+F17Wendeautomatik
+B101nicht löschen, v
+OFFDelay(100ms):
+###/5
+B104nicht löschen, v
+OFFDelay(100ms):
+###/5
+B106
+B106 = ( I01 OR B110
+ OR F17 ) AND NOT B1
+04 
+B107
+B107 = ( I02 OR B111
+ ) AND NOT B101 AND 
+NOT I03 
+SUB FBD F16    page 2 of 3
+
+==== PAGE 65 ====
+Op01
+Op02
+Op03
+Op04
+SUB FBD F16    page 3 of 3
+
+==== PAGE 66 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Ip04
+###/1
+B100
+OFF to ON
+SUB FBD F17    page 1 of 2
+
+==== PAGE 67 ====
+Op01
+Op02
+B98Wendeautomatik F
+Delay Time(100ms) :
+###/10
+OneShotTime :
+###/10
+B99
+###/1
+SUB FBD F17    page 2 of 2
+
+==== PAGE 68 ====
+FBD-TITEL
+FBD-TITEL
+Ip02
+Ip03
+Ip01
+boolen
+B120
+Count: ###/1
+SUB FBD F18    page 1 of 2
+
+==== PAGE 69 ====
+Op02
+Op01
+boolen
+boolen
+SUB FBD F18    page 2 of 2
+
+==== PAGE 70 ====
+FBD-TITEL
+FBD-TITEL
+Ip04
+Zentral-Dämmerun
+Ip05
+Roll. verfahren
+Ip06
+Zentral-Dämmerun
+Ip07
+Beschattung akti
+Ip08
+Beschatt. Autom.
+Ip09
+Besch. Ein Aus
+Ip10
+Wind Sperre umgeIp01
+Ip02
+Ip03
+Zentral-Dämmerun
+B161
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B162
+ONTime(100ms) :
+###/21
+OFFTime(100ms) :
+###/1
+Option : Cycle
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B149
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B156
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B158
+User
+Func
+F23sperren
+M08
+Zentral-Dämmerun
+Roll. verfahren
+Zentral-Dämmerun
+Beschattung akti
+Beschatt. Autom.
+Besch. Ein Aus
+Wind Sperre umge
+Zentral-Dämmerun
+SUB FBD F19    page 1 of 6
+
+==== PAGE 71 ====
+B160boolen
+B160 = ( I04 OR B162
+ OR B156 ) AND NOT F
+23 
+B163
+B164
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B165
+Delay Time(100ms) :
+OneShotTime :
+B157
+B159boolen
+B159 = ( I03 OR B161
+ OR B149 ) AND NOT F
+23 
+User
+Func
+F21
+SUB FBD F19    page 2 of 6
+
+==== PAGE 72 ====
+Op01
+Op02
+Op03
+SUB FBD F19    page 3 of 6
+
+==== PAGE 73 ====
+Ip10
+SUB FBD F19    page 4 of 6
+
+==== PAGE 74 ====
+SUB FBD F19    page 5 of 6
+
+==== PAGE 75 ====
+SUB FBD F19    page 6 of 6
+
+==== PAGE 76 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Wind Sperre umge
+B141
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+B142
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+Wind Sperre umge
+SUB FBD F21    page 1 of 3
+
+==== PAGE 77 ====
+B144
+Prior = RESET
+B145
+B145 = B141 OR ( F22
+ AND B144 ) 
+B137nicht löschen, v
+OFFDelay(100ms):
+###/5
+B138nicht löschen, v
+OFFDelay(100ms):
+###/5
+B139
+B139 = ( I01 OR B141
+ OR F22 ) AND NOT B1
+38 
+B140
+B140 = ( I02 OR B142
+ ) AND NOT B137 AND 
+NOT I03 
+B143
+Prior = RESET
+User
+Func
+F22Wendeautomatik
+SUB FBD F21    page 2 of 3
+
+==== PAGE 78 ====
+Op01
+Op02
+Op03
+Op04
+SUB FBD F21    page 3 of 3
+
+==== PAGE 79 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Ip04
+###/1
+B136
+OFF to ON
+SUB FBD F22    page 1 of 2
+
+==== PAGE 80 ====
+Op01
+Op02
+B132Wendeautomatik F
+Delay Time(100ms) :
+###/10
+OneShotTime :
+###/10
+B133
+SUB FBD F22    page 2 of 2
+
+==== PAGE 81 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+B146
+Count: ###/1
+SUB FBD F23    page 1 of 2
+
+==== PAGE 82 ====
+Op01
+Op02
+SUB FBD F23    page 2 of 2
+
+==== PAGE 83 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Zentral-Dämmerun
+Ip04
+Zentral-Dämmerun
+Ip05
+Roll. verfahren
+Ip06
+Zentral-Dämmerun
+Ip07
+Beschattung akti
+Ip08
+Beschatt. Autom.
+Ip09
+Besch. Ein Aus
+Ip10
+Wind Sperre umge
+B195
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B197
+ONTime(100ms) :
+###/21
+OFFTime(100ms) :
+###/1
+Option : Cycle
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B182
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B183
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B185
+Zentral-Dämmerun
+Zentral-Dämmerun
+Roll. verfahren
+Zentral-Dämmerun
+Beschattung akti
+Beschatt. Autom.
+Besch. Ein Aus
+Wind Sperre umge
+User
+Func
+F27sperren
+M08
+SUB FBD F24    page 1 of 6
+
+==== PAGE 84 ====
+B198
+B199
+Delay Time(100ms) :
+###/0
+OneShotTime :
+###/22
+B200
+Delay Time(100ms) :
+OneShotTime :
+B184
+B189boolen
+B189 = ( I03 OR B195
+ OR B182 ) AND NOT F
+27 
+B190boolen
+B190 = ( I04 OR B197
+ OR B183 ) AND NOT F
+27 
+User
+Func
+F25
+SUB FBD F24    page 2 of 6
+
+==== PAGE 85 ====
+Op01
+Op02
+Op03
+SUB FBD F24    page 3 of 6
+
+==== PAGE 86 ====
+Ip10
+SUB FBD F24    page 4 of 6
+
+==== PAGE 87 ====
+SUB FBD F24    page 5 of 6
+
+==== PAGE 88 ====
+SUB FBD F24    page 6 of 6
+
+==== PAGE 89 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+Wind Sperre umge
+Wind Sperre umge
+B176
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+B177
+ONDelay(100ms):
+###/7
+OFFDelay(100ms):
+###/800
+SUB FBD F25    page 1 of 3
+
+==== PAGE 90 ====
+B178
+Prior = RESET
+B179
+Prior = RESET
+B180
+B180 = B176 OR ( F26
+ AND B179 ) 
+B172nicht löschen, v
+OFFDelay(100ms):
+###/5
+B173nicht löschen, v
+OFFDelay(100ms):
+###/5
+B174
+B174 = ( I01 OR B176
+ OR F26 ) AND NOT B1
+73 
+B175
+B175 = ( I02 OR B177
+ ) AND NOT B172 AND 
+NOT I03 
+User
+Func
+F26Wendeautomatik
+SUB FBD F25    page 2 of 3
+
+==== PAGE 91 ====
+Op01
+Op02
+Op03
+Op04
+SUB FBD F25    page 3 of 3
+
+==== PAGE 92 ====
+FBD-TITEL
+FBD-TITEL
+Ip02
+Ip03
+Ip04
+Ip01
+###/1
+B169
+OFF to ON
+SUB FBD F26    page 1 of 2
+
+==== PAGE 93 ====
+Op02
+Op01
+B166Wendeautomatik F
+Delay Time(100ms) :
+###/10
+OneShotTime :
+###/10
+B167
+SUB FBD F26    page 2 of 2
+
+==== PAGE 94 ====
+FBD-TITEL
+FBD-TITEL
+Ip01
+Ip02
+Ip03
+B181
+Count: ###/1
+SUB FBD F27    page 1 of 2
+
+==== PAGE 95 ====
+Op01
+Op02
+SUB FBD F27    page 2 of 2
+
+==== PAGE 96 ====
+FBD-TITEL
+FBD-TITEL
+Ip04
+Ip01
+Ip02
+Ip03
+B186löscht täglich d
+28.12.2025
+ 12:11
+B102
+Delay Time(100ms) :
+###/1
+OneShotTime :
+###/2
+B108
+ONDelay(100ms):
+###/60
+OFFDelay(100ms):
+###/1
+B62
+B62 = M08 OR ( B62 A
+ND NOT K05 AND NOT B
+186 ) 
+M08
+K06
+K05
+SUB FBD F59    page 1 of 2
+
+==== PAGE 97 ====
+Op04
+Op05
+Op01
+Op02
+Zentral-Dämmerun
+Op03
+B187
+B188
+B109:Ist.Zähler =
+1
+B147
+#####
+B109
+Count: ###/2
+Zentral-Dämmerun
+SUB FBD F59    page 2 of 2
+
+==== PAGE 98 ====
+System-Sketch   page 1 of 1
+
+==== PAGE 99 ====
+ICON INFORMATION
+ICON INFORMATION   page 1 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+I01Taster hoch
+I02Taster runter
+I03
+I04
+I05
+I06
+I07
+I08
+I09
+I10
+I11
+I12
+
+==== PAGE 100 ====
+ICON INFORMATION
+ICON INFORMATION   page 2 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+I13Zentral hoch
+I14Zentral Runter
+I15
+O01Motor hoch
+O02Motor runter
+O03
+O04
+O05
+O06
+O07
+O08
+O09
+
+==== PAGE 101 ====
+ICON INFORMATION
+ICON INFORMATION   page 3 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+EO01
+EO02
+EO03
+EO04
+B01Roll. verfahren OFF 7 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 21 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 8 : 00 SA  JEDE WOCHE
+OFF 22 : 00 SA  JEDE WOCHE
+OFF 8 : 30 SO  JEDE WOCHE
+OFF 21 : 30 SO  JEDE WOCHE
+B02Roll. verfahren OFF 7 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 21 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 8 : 00 SA  JEDE WOCHE
+OFF 22 : 00 SA  JEDE WOCHE
+OFF 8 : 30 SO  JEDE WOCHE
+OFF 21 : 30 SO  JEDE WOCHE
+B03Roll. verfahren OFF 7 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 21 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 8 : 00 SA  JEDE WOCHE
+OFF 22 : 00 SA  JEDE WOCHE
+OFF 8 : 30 SO  JEDE WOCHE
+OFF 21 : 30 SO  JEDE WOCHE
+B04Roll. verfahren OFF 7 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 21 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 8 : 00 SA  JEDE WOCHE
+OFF 22 : 00 SA  JEDE WOCHE
+OFF 8 : 30 SO  JEDE WOCHE
+OFF 21 : 30 SO  JEDE WOCHE
+B05Roll. verfahren OFF 7 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 21 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 8 : 00 SA  JEDE WOCHE
+OFF 22 : 00 SA  JEDE WOCHE
+OFF 8 : 30 SO  JEDE WOCHE
+OFF 21 : 30 SO  JEDE WOCHE
+B06Roll. verfahren OFF 7 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 21 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 8 : 00 SA  JEDE WOCHE
+OFF 22 : 00 SA  JEDE WOCHE
+OFF 8 : 30 SO  JEDE WOCHE
+OFF 21 : 30 SO  JEDE WOCHE
+B07Wendeautomatik Fahrzeit Delay Time :
+###/10
+OneShotTime :
+###/10
+Delay Start = ON to OFF
+
+==== PAGE 102 ====
+ICON INFORMATION
+ICON INFORMATION   page 4 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B08Wendeautomatik Fahrzeit Delay Time :
+###/10
+OneShotTime :
+###/10
+Delay Start = ON to OFF
+B09Count = 1
+Down Counter
+B10Roll. verfahren ON 7 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 21 : 30 MO DI MI DO FR  JEDE WOCHE
+ON 8 : 00 SA  JEDE WOCHE
+OFF 22 : 00 SA  JEDE WOCHE
+ON 8 : 30 SO  JEDE WOCHE
+OFF 21 : 30 SO  JEDE WOCHE
+B11OFF to ON
+B12Position x = 8  y =  3
+Eingang= Verzögerungszeit (B16)
+Special Key = Enable
+Graph = Disable
+B13B13 = NOT B81 OR B70
+ OR M08 
+B14Data: Ist.Zähler
+Small: 1
+Large: 2
+B15B10 ein- aus- zufall Count: ###/2
+B16Delay Time :
+###/2
+OneShotTime :
+###/3
+Delay Start = OFF to ON
+
+==== PAGE 103 ====
+ICON INFORMATION
+ICON INFORMATION   page 5 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B17Delay Time :
+###/0
+OneShotTime :
+###/30
+Delay Start = ON to OFF
+B18
+B19nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B20Schaltzeitpunkte unterdrücken ON 2 : 59 TÄEGLICH JEDE WOCHE
+OFF 3 : 01 TÄEGLICH JEDE WOCHE
+B21nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B22B22 = ( I01 OR B24 O
+R F07 ) AND NOT B21
+B23B23 = ( I02 OR B25 )
+ AND NOT B19 AND NOT
+ I03 
+B24ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B25ON_Delay:
+###/7
+OFF_Delay:
+###/800
+
+==== PAGE 104 ====
+ICON INFORMATION
+ICON INFORMATION   page 6 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B26Prior = RESET
+B27Prior = RESET
+B28B28 = B24 OR ( F07 A
+ND B27 ) 
+B29Count: ###/1
+B30Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B31Beschatt. Uhr ON 7 : 30 TÄEGLICH JEDE WOCHE
+OFF 22 : 00 TÄEGLICH JEDE WOCHE
+B32Beschattung aktivieren ON 7 : 30 TÄEGLICH JEDE WOCHE
+OFF 22 : 00 TÄEGLICH JEDE WOCHE
+B33Beschattung aktivieren ON 7 : 30 TÄEGLICH JEDE WOCHE
+OFF 22 : 00 TÄEGLICH JEDE WOCHE
+B34Beschattung aktivieren ON 7 : 30 TÄEGLICH JEDE WOCHE
+OFF 22 : 00 TÄEGLICH JEDE WOCHE
+B35Beschattung aktivieren ON 7 : 30 TÄEGLICH JEDE WOCHE
+OFF 22 : 00 TÄEGLICH JEDE WOCHE
+
+==== PAGE 105 ====
+ICON INFORMATION
+ICON INFORMATION   page 7 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B36Beschattung aktivieren ON 7 : 30 TÄEGLICH JEDE WOCHE
+OFF 22 : 00 TÄEGLICH JEDE WOCHE
+B37Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B38
+B39
+B40boolen B40 = ( I03 OR B42 O
+R B30 ) AND NOT F09
+B41boolen B41 = ( I04 OR B43 O
+R B37 ) AND NOT F09
+B42Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B43ONTime :
+###/21
+OFFTime :
+###/1
+Option : Cycle
+###/3
+B44
+
+==== PAGE 106 ====
+ICON INFORMATION
+ICON INFORMATION   page 8 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B45Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B46nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B47nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B48Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B49Wendeautomatik Fahrzeit Delay Time :
+###/10
+OneShotTime :
+###/10
+Delay Start = ON to OFF
+B50Count = 1
+Down Counter
+B51OFF to ON
+B52B52 = ( I01 OR B54 O
+R F10 ) AND NOT B47
+B53B53 = ( I02 OR B55 )
+ AND NOT B46 AND NOT
+ I03 
+
+==== PAGE 107 ====
+ICON INFORMATION
+ICON INFORMATION   page 9 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B54ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B55ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B56Prior = RESET
+B57nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B58nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B59B59 = ( I01 OR B65 O
+R F13 ) AND NOT B58
+B60überbrückt Dämmerungsschalter ON 3 : 00 MO DI MI DO FR  JEDE WOCHE
+OFF 7 : 30 MO DI MI DO FR  JEDE WOCHE
+ON 3 : 00 SA  JEDE WOCHE
+OFF 8 : 00 SA  JEDE WOCHE
+ON 3 : 00 SO  JEDE WOCHE
+OFF 8 : 00 SO  JEDE WOCHE
+B61Wind Sperre umgehen ON_Delay:
+###/45
+B62B62 = M08 OR ( B62 A
+ND NOT K05 AND NOT B
+186 ) 
+B63Prior = RESET
+
+==== PAGE 108 ====
+ICON INFORMATION
+ICON INFORMATION   page 10 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B64B64 = ( I02 OR B66 )
+ AND NOT B57 AND NOT
+ I03 
+B65ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B66ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B67Prior = RESET
+B68Prior = RESET
+B69B69 = B65 OR ( F13 A
+ND B68 ) 
+B70sperrt Dämmerungsschalter ON 1 : 00 MO DI MI DO FR  JEDE WOCHE
+OFF 5 : 00 MO DI MI DO FR  JEDE WOCHE
+ON 10 : 00 MO DI MI DO FR  JEDE WOCHE
+OFF 15 : 00 MO DI MI DO FR  JEDE WOCHE
+ON 1 : 00 SA  JEDE WOCHE
+OFF 5 : 00 SA  JEDE WOCHE
+ON 10 : 00 SA  JEDE WOCHE
+OFF 15 : 00 SA  JEDE WOCHE
+ON 1 : 00 SO  JEDE WOCHE
+OFF 5 : 00 SO  JEDE WOCHE
+ON 10 : 00 SO  JEDE WOCHE
+OFF 15 : 00 SO  JEDE WOCHE
+B71Count: ###/1
+B72Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+
+==== PAGE 109 ====
+ICON INFORMATION
+ICON INFORMATION   page 11 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B73Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B74
+B75
+B76Upper = 2700
+Lower = 900
+B77B77 = ( I02 AND NOT
+I01 ) OR ( ( ( I02 A
+ND NOT B76 ) OR B78
+) AND I01 ) 
+B78Upper = 2700
+Lower = 900
+B79
+B80B80 = M08 OR NOT I01
+ 
+B81dämm- ein- aus- Count: ###/1
+
+==== PAGE 110 ====
+ICON INFORMATION
+ICON INFORMATION   page 12 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B82bollen B82 = ( B85 AND B14
+) OR B17 OR I03 
+B83boolen B83 = ( B84 AND B14
+) OR B16 OR I04 
+B84Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B85Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B86Besch. Ein Aus Count: ###/1
+B87boolen B87 = ( I03 OR B93 O
+R B72 ) AND NOT F14
+B88boolen B88 = ( I04 OR B94 O
+R B73 ) AND NOT F14
+B89Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B90Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+
+==== PAGE 111 ====
+ICON INFORMATION
+ICON INFORMATION   page 13 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B91
+B92
+B93Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B94ONTime :
+###/21
+OFFTime :
+###/1
+Option : Cycle
+###/3
+B95
+B96Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B97Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B98Wendeautomatik Fahrzeit Delay Time :
+###/10
+OneShotTime :
+###/10
+Delay Start = ON to OFF
+B99Count = 1
+Down Counter
+
+==== PAGE 112 ====
+ICON INFORMATION
+ICON INFORMATION   page 14 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B100OFF to ON
+B101nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B102Delay Time :
+###/1
+OneShotTime :
+###/2
+Delay Start = ON to OFF
+B103
+B104nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B105Regen Bechattung löschen ON_Delay:
+###/60
+B106B106 = ( I01 OR B110
+ OR F17 ) AND NOT B1
+04 
+B107B107 = ( I02 OR B111
+ ) AND NOT B101 AND
+NOT I03 
+B108ON_Delay:
+###/60
+OFF_Delay:
+###/1
+
+==== PAGE 113 ====
+ICON INFORMATION
+ICON INFORMATION   page 15 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B109Count: ###/2
+B110ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B111ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B112Prior = RESET
+B113Prior = RESET
+B114boolen B114 = ( I03 OR B116
+ OR B89 ) AND NOT F0
+5 
+B115boolen B115 = ( I04 OR B117
+ OR B90 ) AND NOT F0
+5 
+B116Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B117ONTime :
+###/21
+OFFTime :
+###/1
+Option : Cycle
+###/3
+
+==== PAGE 114 ====
+ICON INFORMATION
+ICON INFORMATION   page 16 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B118B118 = NOT B154 OR M
+08 OR I06 
+B119B119 = B110 OR ( F17
+ AND B113 ) 
+B120Count: ###/1
+B121Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B122Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B123
+B124
+B125boolen B125 = ( I03 OR B127
+ OR B121 ) AND NOT F
+18 
+B126boolen B126 = ( I04 OR B128
+ OR B122 ) AND NOT F
+18 
+
+==== PAGE 115 ====
+ICON INFORMATION
+ICON INFORMATION   page 17 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B127Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B128ONTime :
+###/21
+OFFTime :
+###/1
+Option : Cycle
+###/3
+B129
+B130Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B131Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B132Wendeautomatik Fahrzeit Delay Time :
+###/10
+OneShotTime :
+###/10
+Delay Start = ON to OFF
+B133Count = 1
+Down Counter
+B134
+B135Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+
+==== PAGE 116 ====
+ICON INFORMATION
+ICON INFORMATION   page 18 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B136OFF to ON
+B137nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B138nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B139B139 = ( I01 OR B141
+ OR F22 ) AND NOT B1
+38 
+B140B140 = ( I02 OR B142
+ ) AND NOT B137 AND
+NOT I03 
+B141ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B142ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B143Prior = RESET
+B144Prior = RESET
+
+==== PAGE 117 ====
+ICON INFORMATION
+ICON INFORMATION   page 19 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B145B145 = B141 OR ( F22
+ AND B144 ) 
+B146Count: ###/1
+B147Position x = 1  y =  4
+Eingang= Ist.Zähler (B109)
+Special Key = Enable
+Graph = Disable
+B148Position x = 1  y =  1 Länge =  12
+Text = B10-  B1-6  Bes-        Däm-        Syn-
+Property = Fixed
+B149Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B150
+B151Position x = 1  y =  2
+Eingang= Ist.Zähler (B86)
+Special Key = Enable
+Graph = Disable
+B152Position x = 1  y =  3
+Eingang= Ist.Zähler (B81)
+Special Key = Enable
+Graph = Disable
+B153Position x = 1  y =  1
+Eingang= Ist.Zähler (B15)
+Special Key = Enable
+Graph = Disable
+B154B1-6 ein- aus- Count: ###/1
+
+==== PAGE 118 ====
+ICON INFORMATION
+ICON INFORMATION   page 20 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B155Position x = 8  y =  1
+Eingang= Ist.Zähler (B154)
+Special Key = Enable
+Graph = Disable
+B156Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B157
+B158
+B159boolen B159 = ( I03 OR B161
+ OR B149 ) AND NOT F
+23 
+B160boolen B160 = ( I04 OR B162
+ OR B156 ) AND NOT F
+23 
+B161Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B162ONTime :
+###/21
+OFFTime :
+###/1
+Option : Cycle
+###/3
+B163
+
+==== PAGE 119 ====
+ICON INFORMATION
+ICON INFORMATION   page 21 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B164Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B165Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B166Wendeautomatik Fahrzeit Delay Time :
+###/10
+OneShotTime :
+###/10
+Delay Start = ON to OFF
+B167Count = 1
+Down Counter
+B168ON_Delay:
+###/1001
+OFF_Delay:
+###/5648
+B169OFF to ON
+B171Count: ###/1
+B172nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+B173nicht löschen, verriegelung zwischen hoch und
+ runterOFF_Delay:
+###/5
+
+==== PAGE 120 ====
+ICON INFORMATION
+ICON INFORMATION   page 22 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B174B174 = ( I01 OR B176
+ OR F26 ) AND NOT B1
+73 
+B175B175 = ( I02 OR B177
+ ) AND NOT B172 AND
+NOT I03 
+B176ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B177ON_Delay:
+###/7
+OFF_Delay:
+###/800
+B178Prior = RESET
+B179Prior = RESET
+B180B180 = B176 OR ( F26
+ AND B179 ) 
+B181Count: ###/1
+B182Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+
+==== PAGE 121 ====
+ICON INFORMATION
+ICON INFORMATION   page 23 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B183Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B184
+B185
+B186löscht täglich die Beschattungsautomatik ON 3 : 30 TÄEGLICH JEDE WOCHE
+OFF 3 : 31 TÄEGLICH JEDE WOCHE
+B187
+B188B109:Ist.Zähler =
+1
+B189boolen B189 = ( I03 OR B195
+ OR B182 ) AND NOT F
+27 
+B190boolen B190 = ( I04 OR B197
+ OR B183 ) AND NOT F
+27 
+B191freie Schaltuhr OFF 7 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 21 : 30 MO DI MI DO FR  JEDE WOCHE
+OFF 8 : 00 SA  JEDE WOCHE
+OFF 22 : 00 SA  JEDE WOCHE
+OFF 8 : 30 SO  JEDE WOCHE
+OFF 21 : 30 SO  JEDE WOCHE
+
+==== PAGE 122 ====
+ICON INFORMATION
+ICON INFORMATION   page 24 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+B192Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B193Count = 1
+Down Counter
+B194OFF to ON
+B195Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = ON to OFF
+B196B196 = B54 OR ( F10
+AND B63 ) 
+B197ONTime :
+###/21
+OFFTime :
+###/1
+Option : Cycle
+###/3
+B198
+B199Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+B200Delay Time :
+###/0
+OneShotTime :
+###/22
+Delay Start = OFF to ON
+
+==== PAGE 123 ====
+ICON INFORMATION
+ICON INFORMATION   page 25 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+M08
+M08
+M08
+M08
+M08
+M08
+M08
+M08
+M08
+M08
+K05
+K06
+
+==== PAGE 124 ====
+ICON INFORMATION
+ICON INFORMATION   page 26 of 26ICON SIGNALADRESSE KOMMENTAR PARAMETER
+K08
+
+==== PAGE 125 ====
+Station: 0   
+Kommunikations-Bit-Gerät
+CBNo FB FBNo Kommentar
+1DELAYED ONE SHOTB135
+2DELAYED ONE SHOTB192
+3SET RESETB56
+4SET RESETB63
+16COMPAREB188
+17DELAYED ONE SHOTB45
+18DELAYED ONE SHOTB48
+19SET RESETB26
+20SET RESETB27
+32DELAYB61Wind Sperre umgehen
+33DELAYED ONE SHOTB96
+34DELAYED ONE SHOTB97
+35SET RESETB67
+36SET RESETB68
+48DELAYB108
+49DELAYED ONE SHOTB130
+50DELAYED ONE SHOTB131
+51SET RESETB112
+52SET RESETB113
+65DELAYED ONE SHOTB164
+66DELAYED ONE SHOTB165
+67SET RESETB143
+68SET RESETB144
+81DELAYED ONE SHOTB199
+82DELAYED ONE SHOTB200
+83SET RESETB178
+84SET RESETB179
+Kommunikations-Wort-Gerät
+CWNo FB FBNo FB Parameter Kommentar
+Spezielle Kommunikationsdaten   page 1 of 5
+
+==== PAGE 126 ====
+Kommunikations-Wort-Gerät
+CWNo FB FBNo FB Parameter Kommentar
+1DELAYB54SetOffDelay
+2DELAYB55SetOffDelay
+3DELAYB54SetOnDelay
+4DELAYB55SetOnDelay
+5DELAYED ONE SHOTB07OneShotWendeautomatik Fahrzeit
+6COUNTERB171CurCount
+7TIME SWITCH (ECHTZEITUHR...R
+TC)B01SetValue1Roll. verfahren
+8TIME SWITCH (ECHTZEITUHR...R
+TC)B01SetValue2Roll. verfahren
+9TIME SWITCH (ECHTZEITUHR...R
+TC)B01SetValue3Roll. verfahren
+10TIME SWITCH (ECHTZEITUHR...R
+TC)B01SetValue4Roll. verfahren
+11TIME SWITCH (ECHTZEITUHR...R
+TC)B01SetValue5Roll. verfahren
+12TIME SWITCH (ECHTZEITUHR...R
+TC)B01SetValue6Roll. verfahren
+13DELAYB54CurOffDelay
+14DELAYB55CurOffDelay
+15UP DOWN COUNTERB193CurUDCount
+16TIME SWITCH (ECHTZEITUHR...R
+TC)B10SetValue3Roll. verfahren
+17DELAYB24SetOffDelay
+18DELAYB25SetOffDelay
+19DELAYB24SetOnDelay
+20DELAYB25SetOnDelay
+21DELAYED ONE SHOTB08OneShotWendeautomatik Fahrzeit
+22COUNTERB29CurCount
+23TIME SWITCH (ECHTZEITUHR...R
+TC)B02SetValue1Roll. verfahren
+24TIME SWITCH (ECHTZEITUHR...R
+TC)B02SetValue2Roll. verfahren
+25TIME SWITCH (ECHTZEITUHR...R
+TC)B02SetValue3Roll. verfahren
+26TIME SWITCH (ECHTZEITUHR...R
+TC)B02SetValue4Roll. verfahren
+Spezielle Kommunikationsdaten   page 2 of 5
+
+==== PAGE 127 ====
+Kommunikations-Wort-Gerät
+CWNo FB FBNo FB Parameter Kommentar
+27TIME SWITCH (ECHTZEITUHR...R
+TC)B02SetValue5Roll. verfahren
+28TIME SWITCH (ECHTZEITUHR...R
+TC)B02SetValue6Roll. verfahren
+29DELAYB24CurOffDelay
+30DELAYB25CurOffDelay
+31UP DOWN COUNTERB09CurUDCount
+32TIME SWITCH (ECHTZEITUHR...R
+TC)B10SetValue4Roll. verfahren
+33DELAYB65SetOffDelay
+34DELAYB66SetOffDelay
+35DELAYB65SetOnDelay
+36DELAYB66SetOnDelay
+37DELAYED ONE SHOTB49OneShotWendeautomatik Fahrzeit
+38COUNTERB71CurCount
+39TIME SWITCH (ECHTZEITUHR...R
+TC)B03SetValue1Roll. verfahren
+40TIME SWITCH (ECHTZEITUHR...R
+TC)B03SetValue2Roll. verfahren
+41TIME SWITCH (ECHTZEITUHR...R
+TC)B03SetValue3Roll. verfahren
+42TIME SWITCH (ECHTZEITUHR...R
+TC)B03SetValue4Roll. verfahren
+43TIME SWITCH (ECHTZEITUHR...R
+TC)B03SetValue5Roll. verfahren
+44TIME SWITCH (ECHTZEITUHR...R
+TC)B03SetValue6Roll. verfahren
+45DELAYB65CurOffDelay
+46DELAYB66CurOffDelay
+47UP DOWN COUNTERB50CurUDCount
+48TIME SWITCH (ECHTZEITUHR...R
+TC)B10SetValue5Roll. verfahren
+49DELAYB110SetOffDelay
+50DELAYB111SetOffDelay
+51DELAYB110SetOnDelay
+52DELAYB111SetOnDelay
+53DELAYED ONE SHOTB98OneShotWendeautomatik Fahrzeit
+Spezielle Kommunikationsdaten   page 3 of 5
+
+==== PAGE 128 ====
+Kommunikations-Wort-Gerät
+CWNo FB FBNo FB Parameter Kommentar
+54COUNTERB120CurCount
+55TIME SWITCH (ECHTZEITUHR...R
+TC)B04SetValue1Roll. verfahren
+56TIME SWITCH (ECHTZEITUHR...R
+TC)B04SetValue2Roll. verfahren
+57TIME SWITCH (ECHTZEITUHR...R
+TC)B04SetValue3Roll. verfahren
+58TIME SWITCH (ECHTZEITUHR...R
+TC)B04SetValue4Roll. verfahren
+59TIME SWITCH (ECHTZEITUHR...R
+TC)B04SetValue5Roll. verfahren
+60TIME SWITCH (ECHTZEITUHR...R
+TC)B04SetValue6Roll. verfahren
+61DELAYB110CurOffDelay
+62DELAYB111CurOffDelay
+63UP DOWN COUNTERB99UDCount
+64TIME SWITCH (ECHTZEITUHR...R
+TC)B10SetValue6Roll. verfahren
+65DELAYB141SetOffDelay
+66DELAYB142SetOffDelay
+67DELAYB141SetOnDelay
+68DELAYB142SetOnDelay
+69DELAYED ONE SHOTB132OneShotWendeautomatik Fahrzeit
+70COUNTERB146CurCount
+71TIME SWITCH (ECHTZEITUHR...R
+TC)B05SetValue1Roll. verfahren
+72TIME SWITCH (ECHTZEITUHR...R
+TC)B05SetValue2Roll. verfahren
+73TIME SWITCH (ECHTZEITUHR...R
+TC)B05SetValue3Roll. verfahren
+74TIME SWITCH (ECHTZEITUHR...R
+TC)B05SetValue4Roll. verfahren
+75TIME SWITCH (ECHTZEITUHR...R
+TC)B05SetValue5Roll. verfahren
+76TIME SWITCH (ECHTZEITUHR...R
+TC)B05SetValue6Roll. verfahren
+77DELAYB141CurOffDelay
+78DELAYB142CurOffDelay
+Spezielle Kommunikationsdaten   page 4 of 5
+
+==== PAGE 129 ====
+Kommunikations-Wort-Gerät
+CWNo FB FBNo FB Parameter Kommentar
+79UP DOWN COUNTERB133UDCount
+80DELAYB168SetOnDelay
+81DELAYB176SetOffDelay
+82DELAYB177SetOffDelay
+83DELAYB176SetOnDelay
+84DELAYB177SetOnDelay
+85DELAYED ONE SHOTB166OneShotWendeautomatik Fahrzeit
+86COUNTERB181CurCount
+87TIME SWITCH (ECHTZEITUHR...R
+TC)B06SetValue1Roll. verfahren
+88TIME SWITCH (ECHTZEITUHR...R
+TC)B06SetValue2Roll. verfahren
+89TIME SWITCH (ECHTZEITUHR...R
+TC)B06SetValue3Roll. verfahren
+90TIME SWITCH (ECHTZEITUHR...R
+TC)B06SetValue4Roll. verfahren
+91TIME SWITCH (ECHTZEITUHR...R
+TC)B06SetValue5Roll. verfahren
+92TIME SWITCH (ECHTZEITUHR...R
+TC)B06SetValue6Roll. verfahren
+93DELAYB176CurOffDelay
+94DELAYB177CurOffDelay
+95UP DOWN COUNTERB167CurUDCount
+96DELAYB168SetOffDelay
+97COUNTERB15CurCountB10 ein- aus- zufall
+98COUNTERB86CurCountBesch. Ein Aus
+99COUNTERB81CurCountdämm- ein- aus-
+100COUNTERB154CurCountB1-6 ein- aus-
+Spezielle Kommunikationsdaten   page 5 of 5
+
+==== PAGE 130 ====
+FBD Title:
+FBD-TITEL
+Project Name:
+Contract Number:
+Customer Address:
+Phone Number:
+Project Address:
+Contract Person:
+Start Date:
+End Date:
+Fbd Title Details   page 1 of 1

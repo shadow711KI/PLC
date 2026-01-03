@@ -1,0 +1,56 @@
+{
+  "groups": {
+    "OG": [
+      "Anna Süd",
+      "Anna West",
+      "Bad",
+      "Fitnessraum",
+      "Gäste",
+      "Schlafen Ankleide",
+      "Schlafen Ost",
+      "Schlafen Süd",
+      "Treppe"
+    ],
+    "Schlafen": [
+      "Schlafen Ankleide",
+      "Schlafen Ost",
+      "Schlafen Süd"
+    ],
+    "Anna": [
+      "Anna Süd",
+      "Anna West"
+    ],
+    "EG": [
+      "Wohnen West R",
+      "Wohnen West L",
+      "Wohnen Süd R",
+      "Wohnen Süd L",
+      "Wohnen Ost",
+      "Arbeiten"
+    ],
+    "Haus": [
+      "Anna Süd",
+      "Anna West",
+      "Arbeiten",
+      "Bad",
+      "Fitnessraum",
+      "Gäste",
+      "Schlafen Ankleide",
+      "Schlafen Ost",
+      "Schlafen Süd",
+      "Treppe",
+      "Wohnen Ost",
+      "Wohnen Süd L",
+      "Wohnen Süd R",
+      "Wohnen West L",
+      "Wohnen West R"
+    ]
+  },
+  "order": [
+    "Haus",
+    "OG",
+    "Schlafen",
+    "Anna",
+    "EG"
+  ]
+}

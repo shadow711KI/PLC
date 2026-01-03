@@ -1,0 +1,98 @@
+{
+  "SPS1": {
+    "host": "192.168.178.234",
+    "port": 1001,
+    "station": 0,
+    "motors": {
+      "Wohnen_Ost": {
+        "nr": 1,
+        "addrLow": 0,
+        "addrHigh": 1
+      },
+      "Wohnen_Sued_links": {
+        "nr": 2,
+        "addrLow": 0,
+        "addrHigh": 2
+      },
+      "Wohnen_Sued_rechts": {
+        "nr": 3,
+        "addrLow": 0,
+        "addrHigh": 3
+      },
+      "Wohnen_West_links": {
+        "nr": 4,
+        "addrLow": 0,
+        "addrHigh": 4
+      },
+      "Wohnen_West_rechts": {
+        "nr": 5,
+        "addrLow": 0,
+        "addrHigh": 5
+      },
+      "Arbeiten": {
+        "nr": 6,
+        "addrLow": 0,
+        "addrHigh": 6
+      }
+    }
+  },
+  "SPS2": {
+    "host": "192.168.178.234",
+    "port": 1002,
+    "station": 0,
+    "motors": {
+      "Schlafen_Sued": {
+        "nr": 1,
+        "addrLow": 0,
+        "addrHigh": 1
+      },
+      "Anna_Sued": {
+        "nr": 2,
+        "addrLow": 0,
+        "addrHigh": 2
+      },
+      "Anna_West": {
+        "nr": 3,
+        "addrLow": 0,
+        "addrHigh": 3
+      },
+      "Fitnessraum": {
+        "nr": 4,
+        "addrLow": 0,
+        "addrHigh": 4
+      },
+      "Frida": {
+        "nr": 5,
+        "addrLow": 0,
+        "addrHigh": 5
+      },
+      "Treppe": {
+        "nr": 6,
+        "addrLow": 0,
+        "addrHigh": 6
+      }
+    }
+  },
+  "SPS3": {
+    "host": "192.168.178.235",
+    "port": 1003,
+    "station": 0,
+    "motors": {
+      "Bad": {
+        "nr": 2,
+        "addrLow": 0,
+        "addrHigh": 2
+      },
+      "Schlafen_Ankleide": {
+        "nr": 3,
+        "addrLow": 0,
+        "addrHigh": 3
+      },
+      "Schlafen_Osten": {
+        "nr": 4,
+        "addrLow": 0,
+        "addrHigh": 4
+      }
+    }
+  }
+}

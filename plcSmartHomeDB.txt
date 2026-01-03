@@ -1,0 +1,1064 @@
+{
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p34" : {
+    "Attributes" : {
+      "name" : "Arbeiten",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p47"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p54" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 1,
+      "name" : "Schlafen Süd",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p25",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p8"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p23" : {
+    "Attributes" : {
+      "name" : "2_EG",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p52",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p53",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p60",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p47",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p51",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p58"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p49" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 3,
+      "name" : "Anna West",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p27",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p32"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p8"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p8" : {
+    "Attributes" : {
+      "port" : 1002,
+      "activeTimeSwitches" : 0,
+      "wifiSSID" : "WLAN@HOME_EG_5_0",
+      "modbusOffset" : 0,
+      "wifiPort" : 0,
+      "type" : 0,
+      "name" : "SPS-06 \/ 6 Jalousien (SPS2)",
+      "url" : "192.168.178.234"
+    },
+    "ObjectType" : "SPSStation",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p56",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p63",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p54",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p48",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p55",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p49"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "sensor" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      },
+      {
+        "timer" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p63" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 5,
+      "name" : "Frida",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p26",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p32"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p8"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p58" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 5,
+      "name" : "Wohnen West rechts",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p23",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p22",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p32",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p29"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p7"
+    }
+  },
+  "completeCountOfToManyRelations" : 101,
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p51" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 3,
+      "name" : "Wohnen Süd rechts",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p23",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p28",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p22"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p7"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p25" : {
+    "Attributes" : {
+      "name" : "Schlafen",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p62",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p46",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p54"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p46" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 3,
+      "name" : "Schlafen Ankleide",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p25",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p6"
+    }
+  },
+  "completeCountOfToOneRelations" : 15,
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p31" : {
+    "Attributes" : {
+      "name" : "Treppe",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p48"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p60" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 4,
+      "name" : "Wohnen West links",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p23",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p22",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p32",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p29"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p7"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p55" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 4,
+      "name" : "Fitnessraum",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p32",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p8"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p27" : {
+    "Attributes" : {
+      "name" : "Hannah",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p49",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p56"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p33" : {
+    "Attributes" : {
+      "name" : "Bad",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p50"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p22" : {
+    "Attributes" : {
+      "name" : "Wohnen",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p52",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p53",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p60",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p51",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p58"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p52" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 1,
+      "name" : "Wohnen Ost",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p22",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p23",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p7"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p47" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 6,
+      "name" : "Arbeiten",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p23",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p32",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p34"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p7"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p29" : {
+    "Attributes" : {
+      "name" : "Wohnen West",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p60",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p58"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p7" : {
+    "Attributes" : {
+      "port" : 1001,
+      "activeTimeSwitches" : 0,
+      "wifiSSID" : "WLAN@HOME_EG_5_0",
+      "modbusOffset" : 0,
+      "wifiPort" : 0,
+      "type" : 0,
+      "name" : "SPS-05 \/ 6 Jalousien (SPS1)",
+      "url" : "192.168.178.234"
+    },
+    "ObjectType" : "SPSStation",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p52",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p53",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p60",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p47",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p51",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p58"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "sensor" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      },
+      {
+        "timer" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p56" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 2,
+      "name" : "Anna Süd",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p27",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p8"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24" : {
+    "Attributes" : {
+      "name" : "3_OG",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p54",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p48",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p55",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p50",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p62",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p46",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p49",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p56",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p63"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "completeCountOfDBObjects" : 31,
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p53" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 2,
+      "name" : "Wohnen Süd links",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p23",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p28",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p22"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p7"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p26" : {
+    "Attributes" : {
+      "name" : "Frida",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p63"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p48" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 6,
+      "name" : "Treppe",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p31",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p8"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p32" : {
+    "Attributes" : {
+      "name" : "Westen",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p58",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p63",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p60",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p47",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p55",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p49"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p62" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 4,
+      "name" : "Schlafen Osten",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p25",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p6"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21" : {
+    "Attributes" : {
+      "name" : "1_Haus",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p48",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p47",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p56",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p58",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p60",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p62",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p63",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p46",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p54",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p55",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p49",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p50",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p53",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p51",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p52"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p50" : {
+    "Attributes" : {
+      "dimmerUpperLimit" : 105,
+      "dimmerLowerLimit" : 18,
+      "gearid" : 2,
+      "name" : "Bad",
+      "type" : 0,
+      "optionalInfo" : 0
+    },
+    "ObjectType" : "Gear",
+    "ToManyRelations" : [
+      {
+        "geargroup" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p24",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p33",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p21"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "room" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+      "spsStation" : "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p6"
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/GearGroup\/p28" : {
+    "Attributes" : {
+      "name" : "Wohnen Süd",
+      "optionalInfo" : 0,
+      "type" : 0
+    },
+    "ObjectType" : "GearGroup",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p53",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p51"
+        ]
+      },
+      {
+        "rooms" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  },
+  "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/SPSStation\/p6" : {
+    "Attributes" : {
+      "port" : 1003,
+      "activeTimeSwitches" : 0,
+      "modbusOffset" : 0,
+      "wifiPort" : 0,
+      "type" : 0,
+      "name" : "SPS-17 \/ 6 Jalousien (SPS3)",
+      "url" : "192.168.178.235"
+    },
+    "ObjectType" : "SPSStation",
+    "ToManyRelations" : [
+      {
+        "gears" : [
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p62",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p46",
+          "x-coredata:\/\/AD206DAD-8F82-4FD3-AF77-D83A42A1018F\/Gear\/p50"
+        ]
+      },
+      {
+        "programs" : [
+
+        ]
+      },
+      {
+        "sensor" : [
+
+        ]
+      },
+      {
+        "systemValues" : [
+
+        ]
+      },
+      {
+        "timer" : [
+
+        ]
+      }
+    ],
+    "ToOneRelations" : {
+
+    }
+  }
+}

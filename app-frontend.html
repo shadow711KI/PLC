@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iHomeControl K2 - Motor Steuerung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        /* Hauptbildschirm */
+        .screen {
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px 20px;
+            text-align: center;
+            animation: slideIn 0.5s ease;
+            aspect-ratio: 9/16;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .screen.active {
+            display: flex;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Bildschirm 1: Hauptmenu */
+        .main-menu {
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .header {
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .motor-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .motor-item {
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .motor-item:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .motor-item.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        /* Bildschirm 2: Motor Detail */
+        .motor-detail {
+            justify-content: flex-start;
+            gap: 20px;
+        }
+        
+        .motor-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .motor-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .motor-header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .status-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 15px;
+        }
+        
+        .status-item {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .status-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .control-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        .btn-up {
+            background: #4CAF50;
+            grid-column: 1;
+        }
+        
+        .btn-up:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+        
+        .btn-stop {
+            background: #ff9800;
+            grid-column: 2;
+        }
+        
+        .btn-stop:hover {
+            background: #e68900;
+            transform: scale(1.05);
+        }
+        
+        .btn-down {
+            background: #f44336;
+            grid-column: 3;
+        }
+        
+        .btn-down:hover {
+            background: #da190b;
+            transform: scale(1.05);
+        }
+        
+        .btn-back {
+            background: #999;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-back:hover {
+            background: #777;
+        }
+        
+        /* Bildschirm 3: Einstellungen */
+        .settings-menu {
+            gap: 15px;
+        }
+        
+        .settings-item {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .settings-item:hover {
+            background: #eee;
+        }
+        
+        .settings-item-label {
+            text-align: left;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .settings-item-arrow {
+            color: #999;
+        }
+        
+        /* Bildschirm 4: Status */
+        .status-screen {
+            gap: 20px;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .status-card {
+            background: #f9f9f9;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .status-card.on {
+            background: #c8e6c9;
+            border-color: #4CAF50;
+        }
+        
+        .status-card.off {
+            background: #ffccbc;
+            border-color: #ff9800;
+        }
+        
+        .status-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .status-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 10px;
+            transition: all 0.3s;
+            flex: 1;
+            padding: 12px 8px;
+        }
+        
+        .nav-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .nav-btn.active {
+            color: #667eea;
+        }
+        
+        /* Hinweis */
+        .info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 12px;
+            color: #1565c0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .screen {
+                border-radius: 25px;
+                padding: 25px 15px;
+            }
+            
+            .motor-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Main Menu (Motorauswahl) -->
+        <div class="screen main-menu active" id="screen-main">
+            <div class="header">
+                <h1>🏠 Jalousien</h1>
+                <p>PLC Smart Home</p>
+            </div>
+            
+            <div class="motor-list">
+                <div class="motor-item" onclick="selectMotor(0, 'Wohnen Ost')">Wohnen Ost</div>
+                <div class="motor-item" onclick="selectMotor(1, 'Wohnen Sued L')">Wohnen Sued L</div>
+                <div class="motor-item" onclick="selectMotor(2, 'Wohnen Sued R')">Wohnen Sued R</div>
+                <div class="motor-item" onclick="selectMotor(3, 'Wohnen West L')">Wohnen West L</div>
+                <div class="motor-item" onclick="selectMotor(4, 'Wohnen West R')">Wohnen West R</div>
+                <div class="motor-item" onclick="selectMotor(5, 'Arbeiten')">Arbeiten</div>
+                <div class="motor-item" onclick="selectMotor(6, 'Schlafen Sued')">Schlafen Sued</div>
+                <div class="motor-item" onclick="selectMotor(7, 'Anna Sued')">Anna Sued</div>
+                <div class="motor-item" onclick="selectMotor(8, 'Anna West')">Anna West</div>
+                <div class="motor-item" onclick="selectMotor(9, 'Fitnessraum')">Fitnessraum</div>
+                <div class="motor-item" onclick="selectMotor(10, 'Frida')">Frida</div>
+                <div class="motor-item" onclick="selectMotor(11, 'Treppe')">Treppe</div>
+                <div class="motor-item" onclick="selectMotor(12, 'Bad')">Bad</div>
+                <div class="motor-item" onclick="selectMotor(13, 'Schlafen Ankleide')">Schlafen Ankleide</div>
+                <div class="motor-item" onclick="selectMotor(14, 'Schlafen Osten')">Schlafen Osten</div>
+            </div>
+            
+            <div class="nav-bar">
+                <button class="nav-btn active" onclick="switchScreen('screen-main')">🏠</button>
+                <button class="nav-btn" onclick="switchScreen('screen-settings')">⚙️</button>
+                <button class="nav-btn" onclick="switchScreen('screen-status')">📊</button>
+            </div>
+        </div>
+        
+        <!-- Screen 2: Motor Control -->
+        <div class="screen motor-detail" id="screen-control">
+            <div class="motor-header">
+                <h2 id="motor-name">Wohnen Ost</h2>
+                <p id="motor-info">Schweberollo / Zeitautomatik</p>
+            </div>
+            
+            <div class="status-info">
+                <div class="status-item">
+                    <div>Status</div>
+                    <div class="status-value" id="motor-status">Oben</div>
+                </div>
+                <div class="status-item">
+                    <div>Laufzeit</div>
+                    <div class="status-value" id="motor-runtime">45s</div>
+                </div>
+            </div>
+            
+            <div class="control-buttons">
+                <button class="btn btn-up" onclick="motorAction('up')">⬆️ HOCH</button>
+                <button class="btn btn-stop" onclick="motorAction('stop')">⏹️ STOP</button>
+                <button class="btn btn-down" onclick="motorAction('down')">⬇️ RUNTER</button>
+            </div>
+            
+            <button class="btn btn-back" onclick="switchScreen('screen-main')">← ZURÜCK</button>
+            
+            <div class="nav-bar">
+                <button class="nav-btn" onclick="switchScreen('screen-main')">🏠</button>
+                <button class="nav-btn" onclick="switchScreen('screen-settings')">⚙️</button>
+                <button class="nav-btn" onclick="switchScreen('screen-status')">📊</button>
+            </div>
+        </div>
+        
+        <!-- Screen 3: Settings -->
+        <div class="screen settings-menu" id="screen-settings">
+            <div class="header">
+                <h1>⚙️ Einstellungen</h1>
+            </div>
+            
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                <div class="settings-item" onclick="switchScreen('screen-sps-setup')">
+                    <div class="settings-item-label">SPS Stationen</div>
+                    <div class="settings-item-arrow">›</div>
+                </div>
+                <div class="settings-item" onclick="alert('Geräte verwalten')">
+                    <div class="settings-item-label">Angeschlossene Geräte</div>
+                    <div class="settings-item-arrow">›</div>
+                </div>
+                <div class="settings-item" onclick="alert('Gruppen verwalten')">
+                    <div class="settings-item-label">Gruppen</div>
+                    <div class="settings-item-arrow">›</div>
+                </div>
+                <div class="settings-item" onclick="alert('System Info')">
+                    <div class="settings-item-label">System Information</div>
+                    <div class="settings-item-arrow">›</div>
+                </div>
+            </div>
+            
+            <div class="nav-bar">
+                <button class="nav-btn" onclick="switchScreen('screen-main')">🏠</button>
+                <button class="nav-btn active" onclick="switchScreen('screen-settings')">⚙️</button>
+                <button class="nav-btn" onclick="switchScreen('screen-status')">📊</button>
+            </div>
+        </div>
+        
+        <!-- Screen 4: Status -->
+        <div class="screen status-screen" id="screen-status">
+            <div class="header">
+                <h1>📊 Status</h1>
+                <p>Aktuelle Gerätesteuerung</p>
+            </div>
+            
+            <div class="status-grid">
+                <div class="status-card on">
+                    <div class="status-label">Motor 1</div>
+                    <div class="status-name">Wohnen Ost</div>
+                </div>
+                <div class="status-card off">
+                    <div class="status-label">Motor 2</div>
+                    <div class="status-name">Arbeiten</div>
+                </div>
+                <div class="status-card on">
+                    <div class="status-label">Motor 3</div>
+                    <div class="status-name">Wohnen Sud</div>
+                </div>
+                <div class="status-card off">
+                    <div class="status-label">Motor 4</div>
+                    <div class="status-name">Schlafzimmer</div>
+                </div>
+            </div>
+            
+            <div class="info">
+                <strong>Hinweis:</strong> Die Status-Informationen werden automatisch aktualisiert. Die Geräte-IDs entsprechen dem Anschlussplan der SPS-Steuerung.
+            </div>
+            
+            <div class="nav-bar">
+                <button class="nav-btn" onclick="switchScreen('screen-main')">🏠</button>
+                <button class="nav-btn" onclick="switchScreen('screen-settings')">⚙️</button>
+                <button class="nav-btn active" onclick="switchScreen('screen-status')">📊</button>
+            </div>
+        </div>
+        
+        <!-- Screen 5: SPS Setup -->
+        <div class="screen settings-menu" id="screen-sps-setup">
+            <div class="header">
+                <h1>📡 SPS Stationen</h1>
+            </div>
+            
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                <div class="settings-item" onclick="alert('SPS1 - Wohnbereich')">
+                    <div class="settings-item-label">
+                        <strong>SPS1</strong><br>
+                        <small>192.168.1.101:1001</small>
+                    </div>
+                    <div class="settings-item-arrow">✓</div>
+                </div>
+                <div class="settings-item" onclick="alert('SPS2 - Schlafbereich')">
+                    <div class="settings-item-label">
+                        <strong>SPS2</strong><br>
+                        <small>192.168.1.102:1002</small>
+                    </div>
+                    <div class="settings-item-arrow">✓</div>
+                </div>
+                <div class="settings-item" onclick="alert('SPS3 - Arbeitsbereich')">
+                    <div class="settings-item-label">
+                        <strong>SPS3</strong><br>
+                        <small>192.168.1.103:1003</small>
+                    </div>
+                    <div class="settings-item-arrow">✓</div>
+                </div>
+            </div>
+            
+            <button class="btn btn-back" onclick="switchScreen('screen-settings')">← ZURÜCK</button>
+        </div>
+    </div>
+    
+    <script>
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+        
+        function selectMotor(index, name) {
+            document.getElementById('motor-name').textContent = name;
+            document.getElementById('motor-info').textContent = 'Motor ' + (index + 1) + ' / Steuerung';
+            
+            const statuses = ['Oben', 'Unten', 'Bewegung', 'Oben', 'Unten', 'Oben', 'Unten', 'Oben', 'Unten', 'Oben', 'Unten', 'Oben', 'Unten', 'Oben', 'Unten'];
+            const runtimes = ['45s', '60s', '55s', '50s', '65s', '45s', '70s', '50s', '60s', '45s', '55s', '50s', '65s', '45s', '60s'];
+            
+            document.getElementById('motor-status').textContent = statuses[index];
+            document.getElementById('motor-runtime').textContent = runtimes[index];
+            
+            switchScreen('screen-control');
+        }
+        
+        function motorAction(action) {
+            const motorName = document.getElementById('motor-name').textContent;
+            const actions = {
+                'up': '⬆️ HOCH',
+                'down': '⬇️ RUNTER',
+                'stop': '⏹️ STOP'
+            };
+            
+            alert(`${motorName}: ${actions[action]} - Befehl gesendet!`);
+        }
+    </script>
+</body>
+</html>
