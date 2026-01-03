@@ -54,20 +54,28 @@ function MotorList({ onAction }: MotorListProps) {
 
   // Real SPS status for all motors (technicalName → status string)
   const [realMotorStatus, setRealMotorStatus] = useState<Record<string, string>>({})
+  // Track if status was ever loaded successfully
+  const [statusLoaded, setStatusLoaded] = useState(false);
 
 
   // Fetch real SPS status for all motors on mount and after actions
   // Memoized to prevent unnecessary re-creation
-  const fetchAllSpsStatus = useCallback(async () => {
+  // Logging helper for stack traces
+  const getShortStack = () => {
+    const stack = new Error().stack?.split('\n').slice(2, 6).map(s => s.trim()).join(' | ');
+    return stack;
+  };
+
+  const fetchAllSpsStatus = useCallback(async (reason = 'unknown') => {
     try {
       const spsNames = ['SPS1', 'SPS2', 'SPS3'];
       let allStatus: Record<string, string> = {};
       for (const spsName of spsNames) {
+        console.log(`[fetchAllSpsStatus] Fetching status for ${spsName} | reason: ${reason} | stack: ${getShortStack()}`);
         const res = await fetch(`${API_BASE_URL}/api/sps/status/${spsName}`);
         const data = await res.json();
         if (data.success && data.data) {
           const spsMotorMap = data.data;
-          // spsMotorMap: { technicalName: { status: 'hoch'|'runter'|'stop'|... } }
           for (const [technicalName, statusObjRaw] of Object.entries(spsMotorMap)) {
             const statusObj = statusObjRaw as { status: string };
             if (motors.some((m) => m.technicalName === technicalName)) {
@@ -77,17 +85,19 @@ function MotorList({ onAction }: MotorListProps) {
         }
       }
       setRealMotorStatus(allStatus);
-      console.log('SPS Status received:', allStatus);
+      if (!statusLoaded) setStatusLoaded(true);
+      console.log('SPS Status received:', allStatus, '| reason:', reason, '| stack:', getShortStack());
     } catch (e) {
-      // Ignore errors
+      console.error('Fehler beim Laden der SPS-Status:', e, '| reason:', reason, '| stack:', getShortStack());
     }
-  }, [motors]); // Memoized with motors dependency
+  }, [motors, statusLoaded]);
 
-  // On mount, fetch status once
+  // On mount, fetch status once (not on every motors change)
   useEffect(() => {
-    fetchAllSpsStatus();
+    console.log('[MotorList] useEffect[] triggered - initial mount | stack:', getShortStack());
+    fetchAllSpsStatus('mount');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [motors]);
+  }, []);
 
 
   useEffect(() => {
@@ -142,8 +152,8 @@ function MotorList({ onAction }: MotorListProps) {
     setSelectedMotor(motor);
     await onAction(motor, action);
     // Nach Aktion: Status neu laden
-    await fetchAllSpsStatus();
-  }, [onAction, setSelectedMotor, fetchAllSpsStatus]); // Memoized with dependencies
+    await fetchAllSpsStatus(`action:${motor.technicalName}:${action}`);
+  }, [onAction, setSelectedMotor, fetchAllSpsStatus]);
 
   // Handler für stufenweises Lamellen-Öffnen/Schließen
   // Memoized to prevent unnecessary re-renders
@@ -163,14 +173,11 @@ function MotorList({ onAction }: MotorListProps) {
       const result = await response.json();
       console.log('Lamellen-Stufe Response:', result);
       // Nach Aktion: Status neu laden
-      await fetchAllSpsStatus();
-      // Status-Icon aktualisieren (optional, falls UI sofort Feedback geben soll)
-      // icon-Variable entfernt – Status-Override entfällt
-      // setMotorStatusOverride entfernt – nur noch echter SPS-Status
+      await fetchAllSpsStatus(`lamellenStufe:${motor.technicalName}:${direction}:${ms}`);
     } catch (error) {
       console.error('Fehler bei Lamellen-Stufe:', error);
     }
-  }, [setSelectedMotor, fetchAllSpsStatus]); // Memoized with dependencies
+  }, [setSelectedMotor, fetchAllSpsStatus]);
   // (removed unused handleRoomClick)
   // Memoized to prevent unnecessary re-renders
   const handleBack = useCallback(() => {
@@ -184,7 +191,9 @@ function MotorList({ onAction }: MotorListProps) {
   const getStatusIcon = useCallback((motor: Motor): string => {
     // Nur echter SPS-Status
     const status = realMotorStatus[motor.technicalName];
-    if (status === undefined) {
+    const hasAnyStatus = Object.keys(realMotorStatus).length > 0;
+    if (status === undefined && statusLoaded && hasAnyStatus) {
+      // Nur loggen, wenn Status nach erstem erfolgreichen Laden und mindestens ein Statuswert vorhanden ist
       console.warn('[StatusIcon] Kein Status für', motor.technicalName, motor.displayName);
     }
     if (status === 'hoch') return '△';
@@ -192,7 +201,7 @@ function MotorList({ onAction }: MotorListProps) {
     if (status === 'stop') return '▢';
     // Fallback
     return '□';
-  }, [realMotorStatus])
+  }, [realMotorStatus, statusLoaded])
 
   // Zeige Raumübersicht
   if (!selectedRoom) {
