@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc --noEmit)",
+      "Bash(git reset:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nRefactor: Create Context API infrastructure \\(Commit 4\\)\n\nCreated two context providers to manage application state:\n\n1. MotorContext \\(src/contexts/MotorContext.tsx\\):\n   - Manages motor-related state:\n     * motors: Motor[]\n     * roomIcons & roomOrder\n     * groups & groupOrder\n   - Provides actions:\n     * setMotors, setRoomIcons, setRoomOrder\n     * setGroups, setGroupOrder\n     * updateRoomOrder, updateGroupOrder\n     * updateMotorStatus\n   - Custom hook: useMotors\\(\\)\n\n2. UIContext \\(src/contexts/UIContext.tsx\\):\n   - Manages UI-related state:\n     * currentScreen \\(navigation\\)\n     * selectedMotor\n     * isLoading & errorMessage\n     * moveMode & groupMoveMode\n   - Provides actions:\n     * setCurrentScreen, setSelectedMotor\n     * setIsLoading, setErrorMessage\n     * toggleMoveMode, toggleGroupMoveMode\n     * showError, clearError\n   - Custom hook: useUI\\(\\)\n\nBoth contexts:\n- Use TypeScript with strict typing\n- Include proper error handling \\(context undefined checks\\)\n- Follow React best practices\n- Are ready for integration in Commit 5\n\nNo functional changes yet - pure infrastructure setup.\nTypeScript compiles successfully with 0 errors.\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(npm run build:*)"
+    ]
+  }
+}

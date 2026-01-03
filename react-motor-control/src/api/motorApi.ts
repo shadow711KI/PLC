@@ -1,23 +1,5 @@
 // Motor Control API Integration
-
-export interface MotorCommand {
-  motor: string
-  action: 'hoch' | 'runter' | 'stop' | 'lamellen_oeffnen' | 'lamellen_schliessen'
-  sps: string
-  port: number
-}
-
-export interface MotorStatusQuery {
-  motorId: number
-  host: string
-  port: number
-}
-
-export interface MotorStatusResponse {
-  status: string
-  dataSize: number
-  raw: string
-}
+import { MotorCommand, MotorStatusQuery, MotorStatusResponse } from '../types'
 
 // API Base URL - dynamisch basierend auf aktuellem Host
 const getApiBaseUrl = () => {
@@ -35,6 +17,7 @@ const API_BASE_URL = getApiBaseUrl()
  * Sendet einen Motor-Befehl an die SPS
  */
 export async function sendMotorCommand(command: MotorCommand): Promise<{ success: boolean; message: string; motorStatus?: Record<string, string> }> {
+  console.log('[sendMotorCommand] API call:', command);
   try {
     const response = await fetch(`${API_BASE_URL}/api/motor/control`, {
       method: 'POST',

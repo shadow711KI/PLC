@@ -1,60 +1,80 @@
-import { Screen } from '../App'
+import { memo, useCallback, useMemo } from 'react'
+import { useUI } from '../contexts/UIContext'
 import './Navigation.css'
 
-interface NavigationProps {
-  currentScreen: Screen
-  onNavigate: (screen: Screen) => void
-  moveMode: boolean
-  onToggleMoveMode: () => void
-  groupMoveMode: boolean
-  onToggleGroupMoveMode: () => void
-}
+function Navigation() {
+  const { currentScreen, setCurrentScreen, moveMode, setMoveMode, groupMoveMode, setGroupMoveMode } = useUI()
 
-export default function Navigation({ currentScreen, onNavigate, moveMode, onToggleMoveMode, groupMoveMode, onToggleGroupMoveMode }: NavigationProps) {
   // Bestimme, ob Verschieben-Modus aktiv ist (entweder für Fenster oder Räume)
-  const isMoveModeActive = (currentScreen === 'main' && moveMode) || (currentScreen === 'rooms' && groupMoveMode)
-  
-  // Toggle-Funktion für den gemeinsamen Verschieben-Button
-  const handleToggleMove = () => {
-    if (currentScreen === 'main') {
-      onToggleMoveMode()
-    } else if (currentScreen === 'rooms') {
-      onToggleGroupMoveMode()
+  // Memoized to prevent unnecessary re-calculations
+  const isMoveModeActive = useMemo(
+    () => (currentScreen === 'main' && moveMode) || (currentScreen === 'rooms' && groupMoveMode),
+    [currentScreen, moveMode, groupMoveMode]
+  )
+
+  // Navigation handler - memoized to prevent unnecessary re-renders of child components
+  const handleNavigate = useCallback((screen: 'main' | 'settings' | 'rooms') => {
+    setCurrentScreen(screen)
+    if (screen !== 'main') {
+      setMoveMode(false)
     }
-  }
+    if (screen !== 'rooms') {
+      setGroupMoveMode(false)
+    }
+  }, [setCurrentScreen, setMoveMode, setGroupMoveMode])
+
+  // Toggle-Funktion für den gemeinsamen Verschieben-Button
+  // Memoized to prevent unnecessary re-renders
+  const handleToggleMove = useCallback(() => {
+    if (currentScreen === 'main') {
+      setMoveMode(prev => !prev)
+    } else if (currentScreen === 'rooms') {
+      setGroupMoveMode(prev => !prev)
+    }
+  }, [currentScreen, setMoveMode, setGroupMoveMode])
   
   return (
-    <div className="navigation">
-      <button 
+    <nav className="navigation" role="navigation" aria-label="Hauptnavigation">
+      <button
         className={`nav-btn ${currentScreen === 'main' ? 'active' : ''}`}
-        onClick={() => onNavigate('main')}
+        onClick={() => handleNavigate('main')}
         title="Fenster"
+        aria-label="Fenster"
+        aria-current={currentScreen === 'main' ? 'page' : undefined}
       >
-        🪟
+        <span aria-hidden="true">🪟</span>
       </button>
-      <button 
+      <button
         className={`nav-btn ${currentScreen === 'rooms' ? 'active' : ''}`}
-        onClick={() => onNavigate('rooms')}
+        onClick={() => handleNavigate('rooms')}
         title="Räume"
+        aria-label="Räume"
+        aria-current={currentScreen === 'rooms' ? 'page' : undefined}
       >
-        🚪
+        <span aria-hidden="true">🚪</span>
       </button>
       {(currentScreen === 'main' || currentScreen === 'rooms') && (
         <button
           className={`nav-btn move-btn ${isMoveModeActive ? 'active' : ''}`}
           onClick={handleToggleMove}
           title={isMoveModeActive ? 'Verschiebemodus beenden' : 'Verschieben'}
+          aria-label={isMoveModeActive ? 'Verschiebemodus beenden' : 'Verschiebemodus aktivieren'}
+          aria-pressed={isMoveModeActive}
         >
-          🔁
+          <span aria-hidden="true">🔁</span>
         </button>
       )}
       <button
         className={`nav-btn ${currentScreen === 'settings' ? 'active' : ''}`}
-        onClick={() => onNavigate('settings')}
+        onClick={() => handleNavigate('settings')}
         title="Einstellungen"
+        aria-label="Einstellungen"
+        aria-current={currentScreen === 'settings' ? 'page' : undefined}
       >
-        ⚙️
+        <span aria-hidden="true">⚙️</span>
       </button>
-    </div>
+    </nav>
   )
 }
+
+export default memo(Navigation)

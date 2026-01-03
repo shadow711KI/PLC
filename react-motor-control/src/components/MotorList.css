@@ -154,6 +154,11 @@
   position: relative;
 }
 
+.room-tile:focus-visible {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
+}
+
 @media (max-width: 600px) {
   .room-tile {
     padding: 16px 8px;
@@ -269,6 +274,11 @@
   min-height: 80px;
   width: 100%;
   min-width: 0;
+}
+
+.tile-btn:focus-visible {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
 }
 
 .tile-btn:hover:not(:disabled) {

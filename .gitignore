@@ -1,1 +1,12 @@
+# Projekt-Logdateien
+motor-commands.log
+app-commands.log
+app-commands-interactive.log
+react-motor-control/server/sps-responses.log
+# Vite chunk files (build output)
+react-motor-control/node_modules/.vite/deps/chunk-*.js
+react-motor-control/node_modules/.vite/deps/chunk-*.js.map
+
+# Server log
+react-motor-control/server/sps-responses.log
 node_modules

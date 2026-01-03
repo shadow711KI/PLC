@@ -1,42 +1,36 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import MotorList from './components/MotorList'
 import Settings from './components/Settings'
 import Rooms from './components/Rooms'
 import Navigation from './components/Navigation'
 import { sendMotorCommand } from './api/motorApi'
+import { Motor, DEFAULT_SPS_MAPPING, MotorConfigResponse, RoomConfigResponse, GroupConfigResponse } from './types'
+import { useMotors } from './contexts/MotorContext'
+import { useUI } from './contexts/UIContext'
 import './App.css'
 
-export type Screen = 'main' | 'settings' | 'rooms'
-
-export interface Motor {
-  id: number
-  name: string
-  technicalName: string;
-  displayName: string
-  sps: string
-  status: string
-  type?: 'jalousie' | 'rollladen'
-}
-
 // SPS Mapping
-const spsMapping: Record<string, { host: string; port: number }> = {
-  SPS1: { host: '192.168.178.234', port: 1001 },
-  SPS2: { host: '192.168.178.234', port: 1002 },
-  SPS3: { host: '192.168.178.235', port: 1003 },
-}
+const spsMapping = DEFAULT_SPS_MAPPING
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('main')
-  const [selectedMotor, setSelectedMotor] = useState<Motor | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [motors, setMotors] = useState<Motor[]>([])
-  const [roomIcons, setRoomIcons] = useState<Record<string, string>>({})
-  const [roomOrder, setRoomOrder] = useState<string[]>([])
-  const [moveMode, setMoveMode] = useState(false)
-  const [groups, setGroups] = useState<Record<string, string[]>>({})
-  const [groupOrder, setGroupOrder] = useState<string[]>([])
-  const [groupMoveMode, setGroupMoveMode] = useState(false)
+  // Use context hooks instead of local state
+  const {
+    motors,
+    setMotors,
+    roomIcons,
+    setRoomIcons,
+    setRoomOrder,
+    groups,
+    setGroups,
+    setGroupOrder,
+  } = useMotors()
+
+  const {
+    currentScreen,
+    setCurrentScreen,
+    setIsLoading,
+    setErrorMessage,
+  } = useUI()
 
   // Lade Motor-Konfiguration und Raum-Order vom Server
   useEffect(() => {
@@ -45,11 +39,11 @@ function App() {
         const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
           ? `http://${window.location.hostname}:3001`
           : 'http://localhost:3001'
-        
+
         const response = await fetch(`${API_BASE_URL}/api/motors/config`)
         if (response.ok) {
-          const config = await response.json()
-          const motorsData = config.motors.map((m: any) => ({
+          const config: MotorConfigResponse = await response.json()
+          const motorsData: Motor[] = config.motors.map((m) => ({
             id: m.id,
             name: m.displayName, // name is the display name for UI
             technicalName: m.technicalName, // technicalName is the backend key
@@ -63,9 +57,9 @@ function App() {
         // Lade Raum-Icons und Reihenfolge
         const roomResponse = await fetch(`${API_BASE_URL}/api/rooms/config`)
         if (roomResponse.ok) {
-          const roomConfig = await roomResponse.json()
+          const roomConfig: RoomConfigResponse = await roomResponse.json()
           const icons: Record<string, string> = {}
-          Object.entries(roomConfig.rooms || {}).forEach(([roomName, data]: [string, any]) => {
+          Object.entries(roomConfig.rooms || {}).forEach(([roomName, data]) => {
             icons[roomName] = data.icon
           })
           setRoomIcons(icons)
@@ -76,7 +70,7 @@ function App() {
         // Lade Gruppen-Konfiguration
         const groupsResponse = await fetch(`${API_BASE_URL}/api/groups/config`)
         if (groupsResponse.ok) {
-          const groupsConfig = await groupsResponse.json()
+          const groupsConfig: GroupConfigResponse = await groupsResponse.json()
           setGroups(groupsConfig.groups || {})
           if (Array.isArray(groupsConfig.order)) {
             setGroupOrder(groupsConfig.order)
@@ -87,74 +81,24 @@ function App() {
       }
     }
     loadConfig()
-  }, [])
+  }, [setMotors, setRoomIcons, setRoomOrder, setGroups, setGroupOrder])
 
-  // Speichere roomOrder auf dem Server
-  const handleUpdateRoomOrder = async (order: string[]) => {
-    setRoomOrder(order)
+  // Memoized to prevent unnecessary re-renders of child components
+  const updateMotorName = useCallback(async (motorName: string, newDisplayName: string) => {
     try {
       const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
         ? `http://${window.location.hostname}:3001`
         : 'http://localhost:3001'
-      await fetch(`${API_BASE_URL}/api/rooms/order`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order })
-      })
-    } catch (error) {
-      console.error('Fehler beim Speichern der Raum-Reihenfolge:', error)
-    }
-  }
 
-  // Speichere groupOrder auf dem Server
-  const handleUpdateGroupOrder = async (order: string[]) => {
-    setGroupOrder(order)
-    try {
-      const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-        ? `http://${window.location.hostname}:3001`
-        : 'http://localhost:3001'
-      await fetch(`${API_BASE_URL}/api/groups/order`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order })
-      })
-    } catch (error) {
-      console.error('Fehler beim Speichern der Gruppen-Reihenfolge:', error)
-    }
-  }
-
-
-  const handleMotorSelect = (motor: Motor) => {
-    setSelectedMotor(motor)
-    setErrorMessage(null)
-  }
-
-  const handleNavigate = (screen: Screen) => {
-    setCurrentScreen(screen)
-    setSelectedMotor(null)
-    if (screen !== 'main') {
-      setMoveMode(false)
-    }
-    if (screen !== 'rooms') {
-      setGroupMoveMode(false)
-    }
-  }
-
-  const updateMotorName = async (motorName: string, newDisplayName: string) => {
-    try {
-      const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-        ? `http://${window.location.hostname}:3001`
-        : 'http://localhost:3001'
-      
       const response = await fetch(`${API_BASE_URL}/api/motors/update-name`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ technicalName: motorName, displayName: newDisplayName })
       })
-      
+
       if (response.ok) {
         // Aktualisiere lokalen State
-        setMotors(prev => prev.map(m => 
+        setMotors(prev => prev.map(m =>
           m.name === motorName ? { ...m, displayName: newDisplayName } : m
         ))
         return true
@@ -164,20 +108,21 @@ function App() {
       console.error('Fehler beim Aktualisieren des Motor-Namens:', error)
       return false
     }
-  }
+  }, [setMotors])
 
-  const updateRoomIcon = async (roomName: string, icon: string) => {
+  // Memoized to prevent unnecessary re-renders of child components
+  const updateRoomIcon = useCallback(async (roomName: string, icon: string) => {
     try {
       const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
         ? `http://${window.location.hostname}:3001`
         : 'http://localhost:3001'
-      
+
       const response = await fetch(`${API_BASE_URL}/api/rooms/update-icon`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ roomName, icon })
       })
-      
+
       if (response.ok) {
         // Aktualisiere lokalen State
         setRoomIcons(prev => ({ ...prev, [roomName]: icon }))
@@ -188,20 +133,21 @@ function App() {
       console.error('Fehler beim Aktualisieren des Raum-Icons:', error)
       return false
     }
-  }
+  }, [setRoomIcons])
 
-  const updateGroup = async (groupName: string, windows: string[]) => {
+  // Memoized to prevent unnecessary re-renders of child components
+  const updateGroup = useCallback(async (groupName: string, windows: string[]) => {
     try {
       const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
         ? `http://${window.location.hostname}:3001`
         : 'http://localhost:3001'
-      
+
       const response = await fetch(`${API_BASE_URL}/api/groups/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ groupName, windows })
       })
-      
+
       if (response.ok) {
         // Aktualisiere lokalen State
         setGroups(prev => ({ ...prev, [groupName]: windows }))
@@ -212,18 +158,19 @@ function App() {
       console.error('Fehler beim Aktualisieren der Gruppe:', error)
       return false
     }
-  }
+  }, [setGroups])
 
-  const deleteGroup = async (groupName: string) => {
+  // Memoized to prevent unnecessary re-renders of child components
+  const deleteGroup = useCallback(async (groupName: string) => {
     try {
       const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
         ? `http://${window.location.hostname}:3001`
         : 'http://localhost:3001'
-      
+
       const response = await fetch(`${API_BASE_URL}/api/groups/${encodeURIComponent(groupName)}`, {
         method: 'DELETE'
       })
-      
+
       if (response.ok) {
         // Aktualisiere lokalen State
         setGroups(prev => {
@@ -238,9 +185,10 @@ function App() {
       console.error('Fehler beim Löschen der Gruppe:', error)
       return false
     }
-  }
+  }, [setGroups])
 
-  const handleAction = async (motor: Motor, action: 'up' | 'down' | 'stop' | 'lamellen_open' | 'lamellen_close') => {
+  // Memoized to prevent unnecessary re-renders of child components
+  const handleAction = useCallback(async (motor: Motor, action: 'up' | 'down' | 'stop' | 'lamellen_open' | 'lamellen_close') => {
     const actionMap = {
       up: 'hoch',
       down: 'runter',
@@ -255,7 +203,7 @@ function App() {
     try {
       const spsInfo = spsMapping[motor.sps]
       const result = await sendMotorCommand({
-        motor: motor.name,
+        motor: motor.technicalName,
         action: actionMap[action],
         sps: spsInfo.host,
         port: spsInfo.port,
@@ -275,9 +223,10 @@ function App() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [setIsLoading, setErrorMessage, setMotors])
 
-  const handleGroupAction = async (groupMotors: Motor[], action: 'up' | 'down' | 'stop' | 'lamellen_open' | 'lamellen_close') => {
+  // Memoized to prevent unnecessary re-renders of child components
+  const handleGroupAction = useCallback(async (groupMotors: Motor[], action: 'up' | 'down' | 'stop' | 'lamellen_open' | 'lamellen_close') => {
     const actionMap = {
       up: 'hoch',
       down: 'runter',
@@ -294,7 +243,7 @@ function App() {
       for (const motor of groupMotors) {
         const spsInfo = spsMapping[motor.sps]
         const result = await sendMotorCommand({
-          motor: motor.name,
+          motor: motor.technicalName,
           action: actionMap[action],
           sps: spsInfo.host,
           port: spsInfo.port,
@@ -310,7 +259,7 @@ function App() {
           setErrorMessage(`Fehler bei ${motor.displayName}: ${result.message}`)
           break // Stoppe bei Fehler
         }
-        
+
         // Kurze Pause zwischen den Befehlen (100ms)
         await new Promise(resolve => setTimeout(resolve, 100))
       }
@@ -319,68 +268,42 @@ function App() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [setIsLoading, setErrorMessage, setMotors])
 
   return (
     <div className="app">
       {currentScreen === 'main' && (
-        <MotorList 
-          motors={motors} 
-          roomIcons={roomIcons}
-          roomOrder={roomOrder}
-          moveMode={moveMode}
-          onUpdateRoomOrder={handleUpdateRoomOrder}
-          selectedMotor={selectedMotor}
-          onSelectMotor={handleMotorSelect}
+        <MotorList
           onAction={handleAction}
-          isLoading={isLoading}
-          errorMessage={errorMessage}
         />
       )}
-      
+
       {currentScreen === 'settings' && (
-        <Settings 
+        <Settings
           motors={motors}
           roomIcons={roomIcons}
           groups={groups}
           onUpdateName={updateMotorName}
           onUpdateRoomIcon={updateRoomIcon}
+          onUpdateGroups={async (groups, order) => {
+            setGroups(groups)
+            setGroupOrder(order)
+            return true
+          }}
           onUpdateGroup={updateGroup}
           onDeleteGroup={deleteGroup}
+          onBack={() => setCurrentScreen('main')}
         />
       )}
-      
+
       {currentScreen === 'rooms' && (
-        <Rooms 
-          motors={motors}
-          groups={groups}
-          groupOrder={groupOrder}
-          roomIcons={roomIcons}
-          moveMode={groupMoveMode}
-          onUpdateGroupOrder={handleUpdateGroupOrder}
-          selectedMotor={selectedMotor}
-          onSelectMotor={handleMotorSelect}
+        <Rooms
           onAction={handleAction}
           onGroupAction={handleGroupAction}
-          isLoading={isLoading}
-          errorMessage={errorMessage}
         />
       )}
-      
-      <Navigation 
-        currentScreen={currentScreen} 
-        onNavigate={handleNavigate} 
-        moveMode={moveMode}
-        onToggleMoveMode={() => {
-          if (currentScreen !== 'main') return
-          setMoveMode(prev => !prev)
-        }}
-        groupMoveMode={groupMoveMode}
-        onToggleGroupMoveMode={() => {
-          if (currentScreen !== 'rooms') return
-          setGroupMoveMode(prev => !prev)
-        }}
-      />
+
+      <Navigation />
     </div>
   )
 }

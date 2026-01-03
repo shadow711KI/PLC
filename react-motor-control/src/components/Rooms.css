@@ -166,6 +166,11 @@
   box-sizing: border-box;
 }
 
+.group-tile:focus-visible {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
+}
+
 @media (max-width: 600px) {
   .group-tile {
     padding: 12px 8px;
@@ -619,6 +624,11 @@
   text-align: center;
 }
 
+.group-btn:focus-visible {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
+}
+
 .group-btn:hover:not(:disabled) {
   background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
   border-color: #ffa500;
@@ -751,6 +761,11 @@
 .motor-tile.clickable:hover {
   border-color: #ffa500;
   box-shadow: 0 8px 24px rgba(255, 165, 0, 0.2);
+}
+
+.motor-tile.clickable:focus-visible {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
 }
 
 .tile-icon {

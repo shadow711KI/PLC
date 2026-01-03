@@ -1,0 +1,28 @@
+.error-message {
+  margin: var(--spacing-md) 0 var(--spacing-lg) 0;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  background: var(--color-danger-bg);
+  color: #ff6b6b;
+  border: 1px solid #ff4444;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.error-message__close-button {
+  background: transparent;
+  border: none;
+  color: #ff6b6b;
+  cursor: pointer;
+  font-size: var(--font-size-2xl);
+  padding: 0;
+  line-height: 1;
+}
+
+.error-message__close-button:focus-visible {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
+}

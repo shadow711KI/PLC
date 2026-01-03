@@ -1,39 +1,197 @@
-/* --- NOTFALL-STYLES: Zeitautomatik sichtbar machen --- */
-.timeauto-edit-table, .timeauto-edit-table * {
+/* Gruppen-Aktionsbuttons wie Automatik-Button */
+.group-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 16px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 15px;
+  
+  border: 1.5px solid #444;
+  background: transparent;
+  color: #1976ff;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  margin-right: 8px;
+  outline: none;
+  box-shadow: none;
+}
+/*
+.group-action-btn--edit {
+  border-color: #1976ff;
+  color: #1976ff;
+}
+.group-action-btn--delete {
+  border-color: #c62828;
+  color: #c62828;
+}
+.group-action-btn--edit:hover {
+  background: #1976ff;
+  color: #fff;
+}
+.group-action-btn--delete:hover {
+  background: #c62828;
+  color: #fff;
+  */
+}
+.group-window-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 12px;
+  max-width: 600px;
+  margin-bottom: 2px;
+}
+.group-window-label {
+  background: transparent !important;
+  color: #fff;
+  border-radius: 4px;
+  border: 1.5px solid #444;
+  padding: 2px 8px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  text-align: center;
+}
+/* Gruppenname und Fenster-Label in bestehender Gruppenliste weiß */
+.group-name-label {
   color: #fff !important;
-  background: #181818 !important;
-  border-color: #ffa500 !important;
-  font-size: 16px !important;
-  box-shadow: none !important;
 }
-.timeauto-edit-table th {
-  color: #ffa500 !important;
-  background: #222 !important;
+.group-window-label {
+  background: #111;
+  color: #fff;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-right: 6px;
+  display: inline-block;
+  margin-bottom: 2px;
+  font-size: 14px;
 }
-.timeauto-edit-table input[type="number"],
-.timeauto-edit-table select {
-  background: #222 !important;
+/* Überschriften im Gruppen-Bereich wie Zeitautomatik-Zeitpunkt */
+.group-section-title {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.group-section-divider {
+  width: 100%;
+  height: 2px;
+  background: #444;
+  border: none;
+  margin-bottom: 12px;
+  border-radius: 1px;
+}
+/* 3x5 Grid für Gruppen-Checkboxen */
+.window-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 16px;
+  max-width: 600px;
+  margin-top: 6px;
+}
+.window-checkbox-label--grid {
+  width: 100%;
+  min-width: 0;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.window-checkbox-label {
+  background: #1976ff !important;
   color: #fff !important;
-  border: 2px solid #ffa500 !important;
-  border-radius: 4px !important;
-  padding: 4px 8px !important;
-}
-.timeauto-edit-table input[type="checkbox"] {
-  accent-color: #ffa500 !important;
-  width: 18px !important;
-  height: 18px !important;
-}
-.weekday-row label {
-  background: #222 !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 2px !important;
-  padding: 0 2px !important;
-  margin-right: 1px !important;
-  min-width: 18px !important;
-  font-size: 11px !important;
+  border-radius: 6px !important;
+  padding: 6px !important;
+  border: 1.5px solid #1976ff !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  min-width: 54px !important;
   justify-content: center !important;
+  user-select: none !important;
+  box-shadow: 0 2px 8px #1976ff33 !important;
+  margin-bottom: 2px;
 }
+/* Gruppen-Checkboxen: Label und Input */
+.window-checkbox-label {
+  margin-right: 10px;
+  font-size: 13px;
+  color: #fff;
+  background: #1976ff;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+}
+.window-checkbox-input {
+  margin-right: 6px;
+  accent-color: #1976ff;
+  width: 18px;
+  height: 18px;
+}
+/* Gruppen-Labels explizit weiß */
+.window-checkbox label {
+  color: #fff !important;
+}
+:root {
+  --primary: #ffa500;
+  --primary-dark: #ffb733;
+  --bg-dark: #181818;
+  --bg-light: #222;
+  --border-radius: 12px;
+  --font-main: 'Segoe UI', 'Arial', sans-serif;
+}
+
+body, .settings-root {
+  font-family: var(--font-main);
+  background: #f8fafc;
+}
+
+.button, .save-btn, .cancel-btn, .create-group-btn {
+  background: var(--primary);
+  color: #181818;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 22px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.button:hover, .save-btn:hover, .create-group-btn:hover {
+  background: var(--primary-dark);
+}
+.cancel-btn {
+  background: #444;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+@media (max-width: 600px) {
+  .settings-root, .settings-screen {
+    padding: 8px;
+  }
+  .sps-tile, .motor-edit-item {
+    margin-bottom: 12px;
+    padding: 8px;
+  }
+  .button, .save-btn, .cancel-btn, .create-group-btn {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+}
+/* --- NOTFALL-STYLES: Zeitautomatik sichtbar machen --- */
+/* Entfernt: NOTFALL- und legacy-Styles für Zeitautomatik-Checkboxen und Label */
 .save-btn, .cancel-btn {
   background: #ffa500 !important;
   color: #181818 !important;
@@ -175,23 +333,33 @@
   justify-content: flex-start !important;
   align-items: center !important;
 }
-.weekday-row label {
-  display: flex;
-  align-items: center;
-  font-size: 11px;
-  gap: 1px;
-  background: #222;
-  border-radius: 2px;
-  padding: 0 2px;
-  border: none;
-  color: #fff;
-}
-.timeauto-edit-table input[type="checkbox"] {
-  accent-color: #ffa500;
-  width: 11px !important;
-  height: 11px !important;
-  margin-right: 1px !important;
-}
+  /* Einheitlicher Stil für Zeitautomatik- und Gruppen-Checkboxen */
+  .weekday-row label,
+  .window-checkbox,
+  .weekday-row label span,
+  .window-checkbox span {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    gap: 6px;
+    background: #1976ff !important;
+    border-radius: 6px !important;
+    padding: 6px !important;
+    border: 1.5px solid #1976ff !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 8px #1976ff33 !important;
+    min-width: 54px !important;
+    justify-content: center !important;
+    user-select: none !important;
+  }
+  .timeauto-edit-table input[type="checkbox"],
+  .window-checkbox input[type="checkbox"] {
+    accent-color: #1976ff !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin-right: 6px !important;
+  }
 .timeauto-edit-actions {
   display: flex;
   gap: 12px;
@@ -702,18 +870,33 @@
   margin-bottom: 20px;
 }
 
-.window-checkbox {
+
+/* Einheitlicher Stil für Zeitautomatik- und Gruppen-Checkboxen (korrigiert, keine verschachtelten Fehler) */
+.weekday-row label,
+.window-checkbox,
+.weekday-row label span,
+.window-checkbox span {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #fff;
-  font-size: 14px;
+  font-size: 13px;
+  gap: 6px;
+  background: #1976ff !important;
+  border-radius: 6px !important;
+  padding: 6px !important;
+  border: 1.5px solid #1976ff !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px #1976ff33 !important;
+  min-width: 54px !important;
+  justify-content: center !important;
+  user-select: none !important;
 }
-
+.timeauto-edit-table input[type="checkbox"],
 .window-checkbox input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: #ffa500;
+  accent-color: #1976ff !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin-right: 6px !important;
 }
 
 .create-group-btn {
