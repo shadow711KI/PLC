@@ -1,3 +1,28 @@
+// ...existing code...
+import { getStatusWord69, getStatusByte48 } from '../../sps-statusbyte-helper.js';
+// ...existing code...
+
+export function buildZeitautomatikReadFrame(motorNr: MotorNr): Buffer {
+    // Frame for reading 6 schedule points for a motor
+    // Format: [STX, LEN, TYP, STATION, OPCODE, COUNT, ...operands, ETX, ckLow, ckHigh]
+    const STX = 0x02, ETX = 0x03, TYP = 0x41;
+    const STATION = 0x00;
+    const OPCODE = 0x00; // read
+    const COUNT = 0x06;
+    const payload = [TYP, STATION, OPCODE, COUNT];
+    for (let i = 0; i < 6; i++) {
+        const addrHex = getStatusWord69(motorNr, `zeitschaltpunkt${i + 1}`);
+        const addr = parseInt(addrHex, 16);
+        payload.push(0x69, addr, 0x00);
+    }
+    const len = payload.length;
+    const frameNoCksum = [STX, len, ...payload, ETX];
+    let sum = 0;
+    for (let i = 2; i < frameNoCksum.length - 1; i++) sum += frameNoCksum[i];
+    const ckLow = sum & 0xFF;
+    const ckHigh = (sum >> 8) & 0xFF;
+    return Buffer.from([...frameNoCksum, ckLow, ckHigh]);
+}
 // Motor-Laufzeiten / Wendezeit / Antippzeiten Frame-Builder und Parser
 import { getStatusWord69, getStatusByte48 } from '../../sps-statusbyte-helper.js';
 

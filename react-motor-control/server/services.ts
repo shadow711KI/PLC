@@ -1,10 +1,21 @@
 // Write Zeitautomatik points for a motor
-import fs from 'fs';
-export async function writeZeitautomatikPoints(spsHost: string, spsPort: number, motorNr: number, points: any[], motor: string, zeitautomatikPath: string, zeitautomatikData: { motors: Record<string, any[]> }): Promise<boolean> {
-    // TODO: Avoid circular dependency for writeZeitautomatikToSPS if needed
-    // Directly call the function if available in this file
-    // If not, refactor to avoid circular import
-    throw new Error('writeZeitautomatikToSPS must be refactored for ESM compatibility.');
+export async function writeZeitautomatikPoints(
+    spsHost: string,
+    spsPort: number,
+    motorNr: number,
+    points: any[],
+    motor: string,
+    zeitautomatikPath: string,
+    zeitautomatikData: { motors: Record<string, any[]> }
+): Promise<boolean> {
+    try {
+        // Cast motorNr to MotorNr type
+        const response = await writeZeitautomatikToSPS(spsHost, spsPort, motorNr as MotorNr, points);
+        return !!response;
+    } catch (err) {
+        console.error('❌ Fehler bei writeZeitautomatikToSPS:', err);
+        return false;
+    }
 }
 // Enable/disable Zeitautomatik for a motor
 import { getStatusWord69 } from '../../sps-statusbyte-helper';
@@ -42,7 +53,8 @@ export async function setZeitautomatikEnabled(spsHost: string, spsPort: number, 
         timeoutHandle = setTimeout(() => { socket.destroy(); resolve(responseReceived); }, 250);
     });
 }
-import { buildMotorTimesReadFrame, buildMotorTimesWriteFrame, parseMotorTimesResponse } from './protocol';
+import net from 'net';
+import { logSPSResponse, logTelegram, buildZeitautomatikReadFrame, buildZeitautomatikWriteFrame, buildMotorTimesReadFrame, buildMotorTimesWriteFrame, parseMotorTimesResponse } from './protocol';
 
 // Motor-Laufzeiten / Wendezeit / Antippzeiten lesen
 export function readMotorTimes(host: string, port: number, motorNr: number): Promise<any | null> {
@@ -54,7 +66,7 @@ export function readMotorTimes(host: string, port: number, motorNr: number): Pro
         let timeoutHandle: NodeJS.Timeout;
 
         socket.on('connect', () => socket.write(frame));
-        socket.on('data', (data) => {
+        socket.on('data', (data: Buffer) => {
             response = Buffer.concat([response, data]);
             logTelegram('RECV', `MotorTimes READ Motor ${motorNr} chunk → ${host}:${port}`, data.toString('hex'));
             logSPSResponse(data.toString('hex'), `MotorTimes READ Motor ${motorNr}`);
@@ -81,7 +93,7 @@ export function writeMotorTimes(host: string, port: number, motorNr: number, val
         let timeoutHandle: NodeJS.Timeout;
 
         socket.on('connect', () => socket.write(frame));
-        socket.on('data', (data) => {
+        socket.on('data', (data: Buffer) => {
             responseReceived = true;
             logTelegram('RECV', `MotorTimes WRITE Motor ${motorNr} chunk → ${host}:${port}`, data.toString('hex'));
             logSPSResponse(data.toString('hex'), `MotorTimes WRITE Motor ${motorNr}`);
@@ -96,17 +108,12 @@ export function writeMotorTimes(host: string, port: number, motorNr: number, val
         timeoutHandle = setTimeout(() => { socket.destroy(); resolve(responseReceived); }, 250);
     });
 }
-import { logSPSResponse, logTelegram } from './protocol';
-import net from 'net';
+// ...existing code...
 
 // Zeitpunkte von SPS lesen (TCP)
 export function readZeitautomatikFromSPS(host: string, port: number, motorNr: MotorNr): Promise<Buffer | null> {
     return new Promise((resolve) => {
-        // buildZeitautomatikReadFrame is still in index.ts, so import it if/when moved
-        // For now, require from index.ts (circular, but will fix in next step)
-        // TODO: Move buildZeitautomatikReadFrame to protocol.ts and import here
-        // TODO: Move buildZeitautomatikReadFrame to protocol.ts and import here for ESM compatibility
-        throw new Error('buildZeitautomatikReadFrame must be refactored for ESM compatibility.');
+        const frame = buildZeitautomatikReadFrame(motorNr);
         const sock = net.createConnection({ host, port, timeout: 250 });
         let response = Buffer.alloc(0);
         let timeoutHandle: NodeJS.Timeout;
@@ -114,7 +121,7 @@ export function readZeitautomatikFromSPS(host: string, port: number, motorNr: Mo
             logTelegram('SEND', `ZeitAuto READ Motor ${motorNr} → ${host}:${port}`, frame.toString('hex'));
             sock.write(frame);
         });
-        sock.on('data', (data) => {
+        sock.on('data', (data: Buffer) => {
             response = Buffer.concat([response, data]);
             logTelegram('RECV', `ZeitAuto READ Motor ${motorNr} chunk → ${host}:${port}`, data.toString('hex'));
             logSPSResponse(data.toString('hex'), `ZeitAuto READ Motor ${motorNr}`);
@@ -125,7 +132,7 @@ export function readZeitautomatikFromSPS(host: string, port: number, motorNr: Mo
             logTelegram('RECV', `ZeitAuto READ Motor ${motorNr} komplett → ${host}:${port}`, response.toString('hex'));
             resolve(response);
         });
-        sock.on('error', (err) => {
+        sock.on('error', () => {
             clearTimeout(timeoutHandle);
             resolve(null);
         });
@@ -137,8 +144,7 @@ export function readZeitautomatikFromSPS(host: string, port: number, motorNr: Mo
 }
 // services.ts - SPS/motor service functions
 import type { MotorNr, TimePoint } from './types';
-import { buildZeitautomatikWriteFrame, logTelegram, logSPSResponse } from './protocol';
-import net from 'net';
+// ...existing code...
 
 // Zeitpunkte an SPS schreiben (TCP)
 export function writeZeitautomatikToSPS(host: string, port: number, motorNr: MotorNr, points: TimePoint[]): Promise<Buffer | null> {
@@ -149,7 +155,7 @@ export function writeZeitautomatikToSPS(host: string, port: number, motorNr: Mot
         let response = Buffer.alloc(0);
         let timeoutHandle: NodeJS.Timeout;
         sock.on('connect', () => { sock.write(frame); });
-        sock.on('data', (data) => {
+        sock.on('data', (data: Buffer) => {
             response = Buffer.concat([response, data]);
             logTelegram('RECV', `ZeitAuto WRITE Motor ${motorNr} chunk → ${host}:${port}`, data.toString('hex'));
             logSPSResponse(data.toString('hex'), 'Zeitautomatik WRITE');

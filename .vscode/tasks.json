@@ -9,6 +9,14 @@
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "Frontend Dev Server neu starten",
+			"type": "shell",
+			"command": "npm run start",
+			"args": [],
+			"isBackground": true,
+			"group": "build"
 		}
 	]
 }
