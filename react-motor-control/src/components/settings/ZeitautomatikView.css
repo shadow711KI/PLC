@@ -1,3 +1,4 @@
+/* ===== Zeitautomatik ===== */
 .zeitautomatik-view__loading {
   color: var(--color-text-muted);
   padding: var(--spacing-2xl);
@@ -172,16 +173,24 @@
 
 .zeitautomatik-view__action-select {
   background: #23242a;
-  color: var(--color-text-primary);
+  color: #fff;
   border: 1.5px solid var(--color-border-primary);
   border-radius: var(--radius-md);
   padding: var(--spacing-xl);
   font-size: var(--font-size-xl);
-  cursor: pointer;
-  height: 40px;
+  font-size: var(--font-size-md);
+  padding: var(--spacing-md);
   box-sizing: border-box;
-  font-weight: var(--font-weight-semibold);
+  font-weight: bold;
   outline: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.zeitautomatik-view__action-select option {
+  background: #23242a;
+  color: #fff;
+  font-weight: bold;
+}
 }
 
 .zeitautomatik-view__buttons {
