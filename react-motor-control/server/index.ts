@@ -576,14 +576,25 @@ function queryMotorStatus(motorNr: number, host: string, port: number): Promise<
 // Hilfsfunktion: Einzelnen Frame senden
 function sendFrame(frame: Buffer, host: string, port: number, label?: string): Promise<boolean> {
     return new Promise((resolve) => {
+        let resolved = false;
+        const done = (val: boolean) => { if (!resolved) { resolved = true; resolve(val); } };
+
         const socket = net.createConnection({ host, port });
         let responseReceived = false;
 
+        // Connection timeout: falls SPS nicht antwortet (wichtig für Ubuntu/Linux)
+        const connTimeout = setTimeout(() => {
+            console.error(`SPS connection timeout: ${host}:${port}`);
+            socket.destroy();
+            done(false);
+        }, 2000);
+
         socket.on('connect', () => {
+            clearTimeout(connTimeout);
             const tag = label ? `${label} → ${host}:${port}` : `SPS ${host}:${port}`;
             logTelegram('SEND', tag, frame.toString('hex'));
             socket.write(frame);
-            setTimeout(() => socket.destroy(), 500); // Erhöht von 250ms auf 500ms für zuverlässige SPS-Antworten
+            setTimeout(() => socket.destroy(), 600);
         });
 
         socket.on('data', (data) => {
@@ -593,12 +604,14 @@ function sendFrame(frame: Buffer, host: string, port: number, label?: string): P
         });
 
         socket.on('error', (err) => {
+            clearTimeout(connTimeout);
             console.error('SPS connection error:', err.message);
-            resolve(false);
+            done(false);
         });
 
         socket.on('close', () => {
-            resolve(responseReceived);
+            clearTimeout(connTimeout);
+            done(responseReceived);
         });
     });
 }
@@ -1022,8 +1035,8 @@ app.post('/api/groups/control', async (req: Request, res: Response) => {
             }
             const success = await sendCommandToSPS(spsData.host, spsData.port, frame, `Motor ${motor}`);
             results[motor] = { success, message: success ? 'Befehl gesendet' : 'Keine Antwort von SPS' };
-            // 50ms Pause zwischen den Motoren
-            await new Promise(resolve => setTimeout(resolve, 50));
+            // 200ms Pause zwischen den Motoren (erhöht von 50ms für Ubuntu/Linux-Kompatibilität)
+            await new Promise(resolve => setTimeout(resolve, 200));
         }
         return res.json({ success: true, results });
     } catch (error) {
