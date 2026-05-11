@@ -159,7 +159,8 @@ export function writeZeitautomatikToSPS(host: string, port: number, motorNr: Mot
             response = Buffer.concat([response, data]);
             logTelegram('RECV', `ZeitAuto WRITE Motor ${motorNr} chunk → ${host}:${port}`, data.toString('hex'));
             logSPSResponse(data.toString('hex'), 'Zeitautomatik WRITE');
-            if (response.length >= 10) {
+            // SPS sends 5-byte ACK for write operations - resolve immediately
+            if (response.length >= 5) {
                 clearTimeout(timeoutHandle);
                 sock.destroy();
                 logTelegram('RECV', `ZeitAuto WRITE Motor ${motorNr} komplett → ${host}:${port}`, response.toString('hex'));

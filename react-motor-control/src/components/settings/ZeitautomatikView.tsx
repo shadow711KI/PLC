@@ -55,7 +55,7 @@ function ZeitautomatikView({
                       return (
                         <label
                           key={d}
-                          className={`zeitautomatik-view__weekday-checkbox ${isDisabled ? 'zeitautomatik-view__weekday-checkbox--disabled' : ''}`}
+                          className={`zeitautomatik-view__weekday-checkbox ${checked ? 'zeitautomatik-view__weekday-checkbox--active' : ''} ${isDisabled ? 'zeitautomatik-view__weekday-checkbox--disabled' : ''}`}
                         >
                           <input
                             type="checkbox"
@@ -65,11 +65,11 @@ function ZeitautomatikView({
                             className={`zeitautomatik-view__weekday-checkbox-input ${isDisabled ? 'zeitautomatik-view__weekday-checkbox-input--disabled' : ''}`}
                           />
                           <span className="zeitautomatik-view__weekday-checkbox-icon">
-                            <svg width="14" height="14" viewBox="0 0 14 14" style={{display:'block'}}>
+                            <svg width="14" height="14" viewBox="0 0 14 14" style={{ display: 'block' }}>
                               <polyline points="3,8 6,11 11,4" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                           </span>
-                          {['So','Mo','Di','Mi','Do','Fr','Sa'][d]}
+                          {['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'][d]}
                         </label>
                       );
                     })}

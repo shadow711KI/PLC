@@ -64,17 +64,23 @@
   cursor: pointer;
   font-size: var(--font-size-md);
   padding: var(--spacing-sm);
-  background: var(--color-primary-pale);
+  background: #2a2b2e;
   border-radius: var(--radius-md);
-  color: var(--color-text-primary);
+  color: #666;
   font-weight: var(--font-weight-bold);
-  border: 1.5px solid var(--color-primary-pale);
+  border: 1.5px solid #444;
   box-shadow: var(--shadow-primary);
   transition: all var(--transition-base);
   position: relative;
   min-width: 54px;
   justify-content: center;
   user-select: none;
+}
+
+.zeitautomatik-view__weekday-checkbox--active {
+  background: var(--color-primary-pale);
+  border-color: var(--color-primary-pale);
+  color: var(--color-text-primary);
 }
 
 .zeitautomatik-view__weekday-checkbox--disabled {
@@ -103,12 +109,21 @@
   width: 18px;
   height: 18px;
   border-radius: var(--radius-sm);
-  background: var(--color-primary-pale);
-  border: 1.5px solid var(--color-text-primary);
+  background: #2a2b2e;
+  border: 1.5px solid #555;
   margin-right: var(--spacing-sm);
   transition: all var(--transition-base);
   box-shadow: var(--shadow-primary);
   position: relative;
+}
+
+.zeitautomatik-view__weekday-checkbox--active .zeitautomatik-view__weekday-checkbox-icon {
+  background: var(--color-primary-pale);
+  border-color: var(--color-primary-light);
+}
+
+.zeitautomatik-view__weekday-checkbox:not(.zeitautomatik-view__weekday-checkbox--active) .zeitautomatik-view__weekday-checkbox-icon svg polyline {
+  stroke: transparent;
 }
 
 .zeitautomatik-view__time-action-row {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Motor, SettingsProps } from '../types'
 import './Settings.css'
 import SpsView from './settings/SpsView'
@@ -59,44 +59,53 @@ export default function Settings({ motors, roomIcons, groups, onUpdateName, onUp
   // Zeitsynchronisation State
   const [syncingTime, setSyncingTime] = useState(false);
 
-  // Lade Automatik-Status beim Öffnen der SPS-Ansicht
+  // AbortController ref: cancels any in-flight loadAutomatikStatus request when a newer one starts
+  const automatikAbortControllerRef = useRef<AbortController | null>(null);
+
+  // Lade Automatik-Status beim Öffnen der SPS-Ansicht.
+  // Cleanup-Funktion bricht den laufenden Request ab wenn man die Ansicht verlässt,
+  // damit kein veralteter Request nachträglich loadingSpsStatus=false setzt.
   React.useEffect(() => {
     if (view === 'sps') {
       loadAutomatikStatus();
     }
+    return () => {
+      automatikAbortControllerRef.current?.abort();
+    };
   }, [view]);
 
   // Automatik-Status von allen SPS-Stationen laden
+  // Uses AbortController so that only the latest call updates state.
   const loadAutomatikStatus = async () => {
+    // Abort any previous in-flight request
+    automatikAbortControllerRef.current?.abort();
+    const abortController = new AbortController();
+    automatikAbortControllerRef.current = abortController;
+
     setLoadingSpsStatus(true);
     const spsNames = ['SPS1', 'SPS2', 'SPS3'];
     console.log('[DEBUG] Lade Automatik-Status für SPS:', spsNames);
 
+    const tempAutomatikEnabled: Record<string, boolean | null> = {};
+
     await Promise.all(spsNames.map(async (spsName) => {
       try {
-        const res = await fetch(`/api/sps/status/${spsName}`);
+        const res = await fetch(`/api/sps/status/${spsName}`, { signal: abortController.signal });
         const data = await res.json();
         console.log(`[DEBUG] API-Response /api/sps/status/${spsName}:`, data);
         if (data.success && data.data) {
-          // backend may return keys as numeric motor numbers or as technical names
           Object.entries(data.data).forEach(([motorKey, status]: [string, any]) => {
             const maybeNum = parseInt(motorKey);
             let technicalName: string | undefined;
             if (Number.isFinite(maybeNum)) {
               technicalName = Object.entries(motorNumberMapping[spsName] || {}).find(([_unused, nr]) => nr === maybeNum)?.[0];
             } else {
-              technicalName = motorKey; // assume backend already returned technical name
+              technicalName = motorKey;
             }
-
             if (technicalName) {
-              // automVal kann true, false oder null sein
               const automVal = (status && 'automatik' in status) ? status.automatik : (status?.enabled ?? null);
               console.log(`[DEBUG] Setze Automatik-Status: ${technicalName} (SPS: ${spsName}, Key: ${motorKey}) →`, automVal);
-              setAutomatikEnabled(prev => {
-                const updated = { ...prev, [technicalName]: automVal };
-                console.log('[DEBUG] Neuer automatikEnabled State:', updated);
-                return updated;
-              });
+              tempAutomatikEnabled[technicalName] = automVal;
             } else {
               console.warn(`[DEBUG] Kein technischer Name für MotorKey: ${motorKey} in SPS: ${spsName}`);
             }
@@ -104,15 +113,18 @@ export default function Settings({ motors, roomIcons, groups, onUpdateName, onUp
         } else {
           console.warn(`[DEBUG] Keine Daten für SPS: ${spsName}`);
         }
-      } catch (e) {
+      } catch (e: any) {
+        if (e?.name === 'AbortError') return; // Abgebrochener Request – kein Fehler
         console.error(`❌ Fehler beim Laden des Status für ${spsName}:`, e);
       }
     }));
 
-    setLoadingSpsStatus(false);
-    setTimeout(() => {
-      console.log('[DEBUG] automatikEnabled nach loadAutomatikStatus:', automatikEnabled);
-    }, 500);
+    // Only update state if this request was not superseded by a newer one
+    if (!abortController.signal.aborted) {
+      setAutomatikEnabled(tempAutomatikEnabled);
+      setLoadingSpsStatus(false);
+      console.log('[DEBUG] automatikEnabled nach loadAutomatikStatus:', tempAutomatikEnabled);
+    }
   };
 
   // SPS-Automatiken Status laden
@@ -186,7 +198,7 @@ export default function Settings({ motors, roomIcons, groups, onUpdateName, onUp
   const toggleAutomatik = async (motor: Motor, enabled: boolean) => {
     // Use technicalName if present, else fallback to name
     const automatikKey = motor.technicalName || motor.name;
-    setAutomatikEnabled(prev => ({ ...prev, [automatikKey]: enabled }));
+    setAutomatikEnabled(prev => ({ ...prev, [automatikKey]: null })); // Set unknown during request
     try {
       const res = await fetch('/api/zeitautomatik/enable', {
         method: 'POST',
@@ -198,6 +210,8 @@ export default function Settings({ motors, roomIcons, groups, onUpdateName, onUp
         setAutomatikEnabled(prev => ({ ...prev, [automatikKey]: !enabled }));
         console.error('❌ Fehler beim Schalten der Automatik:', data.message);
       } else {
+        // Reload once – AbortController ensures no stale response overwrites this
+        await loadAutomatikStatus();
         console.log(`✅ Automatik ${enabled ? 'AN' : 'AUS'} für ${motor.displayName}`);
       }
     } catch (e) {
@@ -209,7 +223,8 @@ export default function Settings({ motors, roomIcons, groups, onUpdateName, onUp
   // Öffnet Zeitautomatik-Dialog und lädt Daten (nur wenn Automatik AN)
   const openTimeAutoDialog = async (motor: Motor) => {
     // Prüfen ob Automatik aktiv ist
-    if (!automatikEnabled[motor.name]) {
+    const automatikKey = motor.technicalName || motor.name;
+    if (!automatikEnabled[automatikKey]) {
       alert('Zeitautomatik ist ausgeschaltet. Bitte erst einschalten!');
       return;
     }
@@ -257,25 +272,31 @@ export default function Settings({ motors, roomIcons, groups, onUpdateName, onUp
   };
 
   // Handler: Wochentag togglen (mind. 1 Tag muss aktiv bleiben)
+  const weekdayNames = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  const maskToWeekdays = (mask: number) => weekdayNames.filter((_, i) => mask & (1 << i));
+
   const handleWeekdayChange = (idx: number, dayIndex: number, checked: boolean) => {
     const updated = [...timeAutoPoints];
-    const mask = updated[idx].weekdayMask || 0;
+    const point = { ...updated[idx] };
+    const mask = point.weekdayMask || 0;
     const checkedCount = Array(7).fill(0).reduce((acc, _, i) => acc + ((mask & (1 << i)) ? 1 : 0), 0);
     if (!checked && checkedCount === 1 && (mask & (1 << dayIndex))) {
       // Prevent unchecking the last checked day
       return;
     }
     if (checked) {
-      updated[idx].weekdayMask |= (1 << dayIndex);
+      point.weekdayMask = mask | (1 << dayIndex);
     } else {
-      updated[idx].weekdayMask &= ~(1 << dayIndex);
+      point.weekdayMask = mask & ~(1 << dayIndex);
     }
+    point.weekdays = maskToWeekdays(point.weekdayMask);
+    updated[idx] = point;
     setTimeAutoPoints(updated);
   };
 
   const clampTimeValue = (field: 'hour' | 'minute', value: number) => {
-    const min = field === 'hour' ? 1 : 0;
-    const max = field === 'hour' ? 24 : 59;
+    const min = 0;
+    const max = field === 'hour' ? 23 : 59;
     if (!Number.isFinite(value)) return min;
     return Math.min(max, Math.max(min, value));
   };
@@ -294,9 +315,7 @@ export default function Settings({ motors, roomIcons, groups, onUpdateName, onUp
 
   // Handler: Aktion ändern
   const handleActionChange = (idx: number, action: string) => {
-    const updated = [...timeAutoPoints];
-    updated[idx].action = action;
-    setTimeAutoPoints(updated);
+    setTimeAutoPoints(points => points.map((p, i) => i === idx ? { ...p, action } : p));
   };
 
   // Motor-Zeiten Feldänderung

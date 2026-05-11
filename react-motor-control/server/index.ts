@@ -981,6 +981,57 @@ app.get('/api/groups/order', (req: Request, res: Response) => {
 });
 
 
+// Gruppensteuerung: Sende Befehl an alle Motoren einer Gruppe mit 50ms Pause
+app.post('/api/groups/control', async (req: Request, res: Response) => {
+    try {
+        const { groupName, action } = req.body;
+        if (!groupName || !action) {
+            return res.status(400).json({ success: false, message: 'groupName und action erforderlich' });
+        }
+        const motors = groupsConfig.groups[groupName];
+        if (!motors || !Array.isArray(motors) || motors.length === 0) {
+            return res.status(404).json({ success: false, message: 'Gruppe nicht gefunden oder leer' });
+        }
+        let results: Record<string, any> = {};
+        for (const motor of motors) {
+            // Finde SPS und MotorNr
+            let foundSPS: string | null = null;
+            let motorNr: number | null = null;
+            for (const [spsName, spsData] of Object.entries(spsMapping)) {
+                if (spsData.motors[motor]) {
+                    foundSPS = spsName;
+                    motorNr = spsData.motors[motor].nr;
+                    break;
+                }
+            }
+            if (!foundSPS || motorNr === null) {
+                results[motor] = { success: false, message: 'Motor nicht gefunden' };
+                continue;
+            }
+            const spsData = spsMapping[foundSPS];
+            let frame: Buffer;
+            if (action === 'hoch') {
+                frame = buildFrame(motorNr, 0x01);
+            } else if (action === 'runter') {
+                frame = buildFrame(motorNr, 0x02);
+            } else if (action === 'stop') {
+                frame = buildStopFrame(motorNr);
+            } else {
+                results[motor] = { success: false, message: 'Ungültige Aktion' };
+                continue;
+            }
+            const success = await sendCommandToSPS(spsData.host, spsData.port, frame, `Motor ${motor}`);
+            results[motor] = { success, message: success ? 'Befehl gesendet' : 'Keine Antwort von SPS' };
+            // 50ms Pause zwischen den Motoren
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+        return res.json({ success: true, results });
+    } catch (error) {
+        console.error('Fehler bei Gruppensteuerung:', error);
+        res.status(500).json({ success: false, message: 'Serverfehler' });
+    }
+});
+
 
 // Setzt die Reihenfolge der Gruppen
 app.post('/api/groups/order', express.json(), (req: Request, res: Response) => {
@@ -1362,11 +1413,37 @@ app.get('/health', (req: Request, res: Response) => {
     res.json({ status: 'ok' });
 });
 
+// Zeitsynchronisation an alle SPS senden
+async function syncTimeToAllSPS() {
+    const now = new Date();
+    const frame = buildTimeSyncFrame(now);
+    const timeStr = now.toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    console.log(`🕐 Zeitsynchronisation → SPS (${timeStr}): ${frame.toString('hex')}`);
+
+    for (const [spsName, spsData] of Object.entries(spsMapping)) {
+        await new Promise<void>((resolve) => {
+            const socket = net.createConnection({ host: spsData.host, port: spsData.port });
+            let timeoutHandle: NodeJS.Timeout;
+            socket.on('connect', () => { socket.write(frame); });
+            socket.on('data', (data) => { console.log(`✅ ${spsName} Zeit-Sync ACK: ${data.toString('hex')}`); });
+            socket.on('error', (err) => { console.warn(`⚠️ ${spsName} Zeit-Sync Fehler: ${err.message}`); clearTimeout(timeoutHandle); resolve(); });
+            socket.on('close', () => { clearTimeout(timeoutHandle); resolve(); });
+            timeoutHandle = setTimeout(() => { socket.destroy(); resolve(); }, 500);
+        });
+    }
+}
+
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Motor Control Backend läuft auf http://0.0.0.0:${PORT}`);
     console.log(`📡 Verbindungen zu 3 SPS-Stationen konfiguriert`);
     console.log(`🌐 Netzwerk-Zugriff: http://192.168.178.93:${PORT}`);
+
+    // Zeitsynchronisation beim Start (nach 2 Sekunden)
+    setTimeout(() => syncTimeToAllSPS(), 2000);
+
+    // Stündliche Zeitsynchronisation
+    setInterval(() => syncTimeToAllSPS(), 60 * 60 * 1000);
 });
 
 // Keep ES module process alive
