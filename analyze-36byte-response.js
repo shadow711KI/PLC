@@ -76,3 +76,4 @@ examples.forEach((ex, idx) => {
   console.log('  Motoren AN:', automatikBytes.map((v, i) => v === 0x01 ? `M${i+1}` : null).filter(x => x).join(', ') || 'keine');
   console.log('  Motoren AUS:', automatikBytes.map((v, i) => v === 0x00 ? `M${i+1}` : null).filter(x => x).join(', ') || 'keine');
 });
+// [EXPERIMENTELL/ANALYSE] Protokollanalyse

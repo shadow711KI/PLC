@@ -118,3 +118,4 @@ function testCommand(status, statusName) {
   console.log('3. Fährt die Jalousie physisch rauf/runter?');
   console.log('═════════════════════════════════════════════════\n');
 })();
+// [EXPERIMENTELL/DEBUG] Debug-Skript für Wohnen_Ost

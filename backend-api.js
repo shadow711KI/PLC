@@ -1,3 +1,5 @@
+
+// [PRODUKTIV] Backend-API für Motorsteuerung
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');

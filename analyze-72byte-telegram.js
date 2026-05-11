@@ -39,3 +39,4 @@ console.log('Dieses Telegramm liest für Motor 1 (SPS1):');
 console.log('  - 15x OpCode 0x48 (Byte Read) - Motor-Status-Werte');
 console.log('  -  6x OpCode 0x69 (Word Read) - Zeitschaltpunkte 1-6');
 console.log('\nVerwendet bei: App-Start, Zeitautomatik-Dialog öffnen');
+// [EXPERIMENTELL/ANALYSE] Protokollanalyse

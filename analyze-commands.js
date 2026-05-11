@@ -1,3 +1,5 @@
+
+// [EXPERIMENTELL/ANALYSE] Protokollanalyse
 #!/usr/bin/env node
 
 const fs = require('fs');

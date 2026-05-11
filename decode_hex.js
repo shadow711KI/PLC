@@ -1,6 +1,6 @@
 // Decoding the HEX data from the log line
 const hexData = "022E4100010669570080FFF9CD69580080FFF9CD69590080FFF9CD695A0080FD10F6695B0080F83902695C0080F81904037114";
-
+// [EXPERIMENTELL/ANALYSE] Hex-Dekodierung
 // Function to convert HEX to binary
 function hexToBinary(hex) {
     return hex.split('').map(h => parseInt(h, 16).toString(2).padStart(4, '0')).join('');

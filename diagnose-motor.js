@@ -87,3 +87,4 @@ function diagnose(name, addrLow, addrHigh) {
   
   console.log('\nFertig.\n');
 })();
+// [EXPERIMENTELL/DIAGNOSE] Motorstatus-Abfrage

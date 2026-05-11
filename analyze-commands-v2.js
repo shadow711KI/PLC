@@ -96,3 +96,4 @@ console.log('══════════════════════�
 console.log(`Einfache Befehle: ${einfachCount}`);
 console.log(`Komplexe Befehle: ${komplexCount}`);
 console.log(`Gesamt: ${commands.length}\n`);
+// [EXPERIMENTELL/ANALYSE] Protokollanalyse
