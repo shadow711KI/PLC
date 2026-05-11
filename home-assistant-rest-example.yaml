@@ -1,0 +1,51 @@
+# Home Assistant REST-Integration für SPS-Adapter
+rest_command:
+  motor_hoch:
+    url: "http://<IP-ADAPTER>:3001/motor/control"
+    method: POST
+    content_type: "application/json"
+    payload: '{"motorName": "Wohnen_Ost", "command": "up"}'
+  motor_runter:
+    url: "http://<IP-ADAPTER>:3001/motor/control"
+    method: POST
+    content_type: "application/json"
+    payload: '{"motorName": "Wohnen_Ost", "command": "down"}'
+  motor_stop:
+    url: "http://<IP-ADAPTER>:3001/motor/control"
+    method: POST
+    content_type: "application/json"
+    payload: '{"motorName": "Wohnen_Ost", "command": "stop"}'
+  lamellen_auf:
+    url: "http://<IP-ADAPTER>:3001/motor/control"
+    method: POST
+    content_type: "application/json"
+    payload: '{"motorName": "Wohnen_Ost", "command": "lamellen_auf"}'
+  lamellen_zu:
+    url: "http://<IP-ADAPTER>:3001/motor/control"
+    method: POST
+    content_type: "application/json"
+    payload: '{"motorName": "Wohnen_Ost", "command": "lamellen_zu"}'
+
+sensor:
+  - platform: rest
+    name: "Wohnen Ost Status"
+    resource: "http://<IP-ADAPTER>:3001/motor/status?motorName=Wohnen_Ost"
+    value_template: "{{ value_json.position }}"
+    scan_interval: 10
+
+  - platform: rest
+    name: "Wohnen Ost Zeitautomatik"
+    resource: "http://<IP-ADAPTER>:3001/zeitautomatik/read?motorName=Wohnen_Ost"
+    value_template: "{{ value_json.raw }}"
+    scan_interval: 60
+
+switch:
+  - platform: rest
+    name: "Wohnen Ost Automatik"
+    resource: "http://<IP-ADAPTER>:3001/automatik"
+    body_on: '{"motorName": "Wohnen_Ost", "enable": true}'
+    body_off: '{"motorName": "Wohnen_Ost", "enable": false}'
+    is_on_template: "{{ value_json.success }}"
+    method: POST
+    headers:
+      Content-Type: application/json
