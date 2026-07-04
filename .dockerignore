@@ -1,0 +1,10 @@
+.git
+.gitignore
+.vscode
+.venv
+node_modules
+**/node_modules
+**/dist
+**/coverage
+**/*.log
+react-motor-control/server/sps-responses.log

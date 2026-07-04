@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+WORKDIR /app/react-motor-control
+
+COPY react-motor-control/package*.json ./
+RUN npm ci
+
+COPY react-motor-control ./
+COPY sps-statusbyte-helper.js /app/sps-statusbyte-helper.js
+
+ENV NODE_ENV=production
+EXPOSE 3001
+
+CMD ["npm", "run", "server"]

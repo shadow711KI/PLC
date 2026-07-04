@@ -1,15 +1,6 @@
 // Motor Control API Integration
 import { MotorCommand, MotorStatusQuery, MotorStatusResponse } from '../types'
-
-// API Base URL - dynamisch basierend auf aktuellem Host
-const getApiBaseUrl = () => {
-  // Wenn die App über das Netzwerk geladen wird, nutze die gleiche IP für die API
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return `http://${window.location.hostname}:3001`
-  }
-  // Lokal: nutze localhost
-  return import.meta.env.VITE_API_URL || 'http://localhost:3001'
-}
+import { getApiBaseUrl } from './getApiBaseUrl'
 
 const API_BASE_URL = getApiBaseUrl()
 

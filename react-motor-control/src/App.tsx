@@ -4,6 +4,7 @@ import Settings from './components/Settings'
 import Rooms from './components/Rooms'
 import Navigation from './components/Navigation'
 import { sendMotorCommand } from './api/motorApi'
+import { getApiBaseUrl } from './api/getApiBaseUrl'
 import { Motor, DEFAULT_SPS_MAPPING, MotorConfigResponse, RoomConfigResponse, GroupConfigResponse } from './types'
 import { useMotors } from './contexts/MotorContext'
 import { useUI } from './contexts/UIContext'
@@ -13,6 +14,8 @@ import './App.css'
 const spsMapping = DEFAULT_SPS_MAPPING
 
 function App() {
+  const API_BASE_URL = getApiBaseUrl()
+
   // Use context hooks instead of local state
   const {
     motors,
@@ -36,10 +39,6 @@ function App() {
   useEffect(() => {
     const loadConfig = async () => {
       try {
-        const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-          ? `http://${window.location.hostname}:3001`
-          : 'http://localhost:3001'
-
         const response = await fetch(`${API_BASE_URL}/api/motors/config`)
         if (response.ok) {
           const config: MotorConfigResponse = await response.json()
@@ -86,10 +85,6 @@ function App() {
   // Memoized to prevent unnecessary re-renders of child components
   const updateMotorName = useCallback(async (motorName: string, newDisplayName: string) => {
     try {
-      const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-        ? `http://${window.location.hostname}:3001`
-        : 'http://localhost:3001'
-
       const response = await fetch(`${API_BASE_URL}/api/motors/update-name`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -113,10 +108,6 @@ function App() {
   // Memoized to prevent unnecessary re-renders of child components
   const updateRoomIcon = useCallback(async (roomName: string, icon: string) => {
     try {
-      const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-        ? `http://${window.location.hostname}:3001`
-        : 'http://localhost:3001'
-
       const response = await fetch(`${API_BASE_URL}/api/rooms/update-icon`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -138,10 +129,6 @@ function App() {
   // Memoized to prevent unnecessary re-renders of child components
   const updateGroup = useCallback(async (groupName: string, windows: string[]) => {
     try {
-      const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-        ? `http://${window.location.hostname}:3001`
-        : 'http://localhost:3001'
-
       const response = await fetch(`${API_BASE_URL}/api/groups/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -163,10 +150,6 @@ function App() {
   // Memoized to prevent unnecessary re-renders of child components
   const deleteGroup = useCallback(async (groupName: string) => {
     try {
-      const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-        ? `http://${window.location.hostname}:3001`
-        : 'http://localhost:3001'
-
       const response = await fetch(`${API_BASE_URL}/api/groups/${encodeURIComponent(groupName)}`, {
         method: 'DELETE'
       })

@@ -1,14 +1,12 @@
 import { Motor, Room } from '../types'
 import { useMotors } from '../contexts/MotorContext'
 import { useUI } from '../contexts/UIContext'
+import { getApiBaseUrl } from '../api/getApiBaseUrl'
 import './MotorList.css'
 import { useState, useMemo, useEffect, useCallback, memo } from 'react'
 import React from 'react'
 
-// Real SPS status fetching
-const API_BASE_URL = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-  ? `http://${window.location.hostname}:3001`
-  : 'http://localhost:3001'
+const API_BASE_URL = getApiBaseUrl()
 
 // ⚙️ LAMELLEN-STUFEN KONFIGURATION (in Millisekunden)
 // Separate Einstellungen für Öffnen und Schließen

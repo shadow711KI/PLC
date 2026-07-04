@@ -1,0 +1,34 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: react-motor-control/Dockerfile.backend
+    container_name: rjapp-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+    volumes:
+      - ./react-motor-control/motor-config.json:/app/react-motor-control/motor-config.json
+      - ./react-motor-control/room-config.json:/app/react-motor-control/room-config.json
+      - ./react-motor-control/groups-config.json:/app/react-motor-control/groups-config.json
+    networks:
+      - rjapp-net
+
+  frontend:
+    build:
+      context: .
+      dockerfile: react-motor-control/Dockerfile.frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-}
+    container_name: rjapp-frontend
+    depends_on:
+      - backend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - rjapp-net
+
+networks:
+  rjapp-net:
+    driver: bridge
