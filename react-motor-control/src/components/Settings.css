@@ -35,7 +35,6 @@
   background: #c62828;
   color: #fff;
   */
-}
 .group-window-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -231,7 +230,6 @@ body, .settings-root {
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-}
 }
 .timeauto-edit-actions {
   display: flex;

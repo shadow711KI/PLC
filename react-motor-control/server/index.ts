@@ -1216,8 +1216,9 @@ app.get('/api/sps/automatiken/:spsName', async (req: Request, res: Response) => 
             });
 
             socket.on('data', (data) => {
-                responseBuffer = Buffer.concat([responseBuffer, data]);
-                console.log(`📥 Automatiken Response chunk ${sps.host}:${sps.port}:`, data.toString('hex'));
+                const chunk = Buffer.isBuffer(data) ? data : Buffer.from(data);
+                responseBuffer = Buffer.concat([responseBuffer, chunk]);
+                console.log(`📥 Automatiken Response chunk ${sps.host}:${sps.port}:`, chunk.toString('hex'));
             });
 
             socket.on('error', (err) => {

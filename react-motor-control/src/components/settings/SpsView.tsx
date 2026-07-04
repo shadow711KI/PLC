@@ -12,7 +12,7 @@ interface SpsViewProps {
   editingIconMotorId: number | null
   editingIcon: string
   setEditingIcon: (icon: string) => void
-  automatikEnabled: Record<string, boolean>
+  automatikEnabled: Record<string, boolean | null>
   loadingSpsStatus: boolean
   syncingTime: boolean
   onBack: () => void
