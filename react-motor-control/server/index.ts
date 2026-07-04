@@ -402,6 +402,13 @@ motorConfig.motors.forEach((motor: any) => {
     motorStatus[motor.technicalName] = '△';
 });
 
+function resolveTechnicalMotorName(name: string): string {
+    const hit = motorConfig.motors.find((m: any) =>
+        m.technicalName === name || m.displayName === name
+    );
+    return hit?.technicalName || name;
+}
+
 // SPS Adressen mapping (aus addresses.json)
 const spsMapping: Record<string, { host: string; port: number; motors: Record<string, { nr: number }> }> = {
     SPS1: {
@@ -1007,13 +1014,14 @@ app.post('/api/groups/control', async (req: Request, res: Response) => {
         }
         let results: Record<string, any> = {};
         for (const motor of motors) {
+            const technicalMotor = resolveTechnicalMotorName(motor);
             // Finde SPS und MotorNr
             let foundSPS: string | null = null;
             let motorNr: number | null = null;
             for (const [spsName, spsData] of Object.entries(spsMapping)) {
-                if (spsData.motors[motor]) {
+                if (spsData.motors[technicalMotor]) {
                     foundSPS = spsName;
-                    motorNr = spsData.motors[motor].nr;
+                    motorNr = spsData.motors[technicalMotor].nr;
                     break;
                 }
             }
@@ -1033,7 +1041,7 @@ app.post('/api/groups/control', async (req: Request, res: Response) => {
                 results[motor] = { success: false, message: 'Ungültige Aktion' };
                 continue;
             }
-            const success = await sendCommandToSPS(spsData.host, spsData.port, frame, `Motor ${motor}`);
+            const success = await sendCommandToSPS(spsData.host, spsData.port, frame, `Motor ${technicalMotor}`);
             results[motor] = { success, message: success ? 'Befehl gesendet' : 'Keine Antwort von SPS' };
             // 200ms Pause zwischen den Motoren (erhöht von 50ms für Ubuntu/Linux-Kompatibilität)
             await new Promise(resolve => setTimeout(resolve, 200));

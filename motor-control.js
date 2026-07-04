@@ -131,16 +131,19 @@ console.log(`TX: ${frame.toString('hex')}`);
 
 const sock = net.createConnection({ host: motor.spsData.host, port: motor.spsData.port });
 
-// Buffer für die Antwort sammeln
-let receivedBuffer = [];
+// Robuster TCP-Assembler: sammelt Segmente und extrahiert komplette Frames.
+let tcpBuffer = Buffer.alloc(0);
+let receivedFrames = [];
 let responseTimeoutId = null;
+let finished = false;
 
 /**
  * Verarbeitet den gesammelten Puffer und beendet das Skript.
  */
 function processResponse() {
-  // Alle gepufferten Daten zu einem Buffer zusammenfügen
-  const fullData = Buffer.concat(receivedBuffer);
+  const fullData = receivedFrames.length > 0
+    ? Buffer.concat(receivedFrames)
+    : tcpBuffer;
   const hexStr = fullData.toString('hex');
 
   if (fullData.length === 0) {
@@ -156,55 +159,87 @@ function processResponse() {
     }
   }
 
-  // Aufräumen und Beenden
-  sock.end();
-  process.exit(fullData.length > 0 && (hexStr.includes('0203400006') || hexStr.includes('0203400021')) ? 0 : 1);
+  return fullData.length > 0 && (hexStr.includes('0203400006') || hexStr.includes('0203400021')) ? 0 : 1;
+}
+
+function finish(exitCode) {
+  if (finished) {
+    return;
+  }
+  finished = true;
+  clearTimeout(responseTimeoutId);
+  if (!sock.destroyed) {
+    sock.end();
+  }
+  process.exit(exitCode);
+}
+
+function drainFrames() {
+  while (tcpBuffer.length >= 2) {
+    const stxIndex = tcpBuffer.indexOf(0x02);
+    if (stxIndex < 0) {
+      tcpBuffer = Buffer.alloc(0);
+      return;
+    }
+
+    if (stxIndex > 0) {
+      tcpBuffer = tcpBuffer.slice(stxIndex);
+    }
+
+    if (tcpBuffer.length < 2) {
+      return;
+    }
+
+    const payloadLen = tcpBuffer[1];
+    const frameLen = payloadLen + 5;
+
+    if (tcpBuffer.length < frameLen) {
+      return;
+    }
+
+    const frame = tcpBuffer.slice(0, frameLen);
+    const etxPos = 2 + payloadLen;
+    if (frame[etxPos] !== 0x03) {
+      // Ungueltiges Framing: ein Byte verwerfen und weiter nach STX suchen.
+      tcpBuffer = tcpBuffer.slice(1);
+      continue;
+    }
+
+    receivedFrames.push(frame);
+    tcpBuffer = tcpBuffer.slice(frameLen);
+  }
 }
 
 sock.on('connect', () => {
   console.log('Verbunden mit SPS...');
-  
-  // Starte einen Timeout, falls sofort keine Antwort kommt (z.B. bei sehr schnellen Motoren ohne Antwort)
-  // Oder setze ihn zurück, sobald Daten kommen.
+
+  // Gesamt-Timeout fuer die Antwort (kein per-chunk Race durch Idle-Timer).
   responseTimeoutId = setTimeout(() => {
-    // Falls nach 2 Sekunden immer noch nichts da ist, gehe von Timeout aus
-    if (receivedBuffer.length === 0) {
-      processResponse(); // Führt zum Exit wegen leerem Buffer
-    }
-  }, 2000);
+    finish(processResponse());
+  }, 3000);
 
   sock.write(frame);
 });
 
 sock.on('data', (chunk) => {
-  // Daten sammeln
-  receivedBuffer.push(chunk);
-  
+  tcpBuffer = Buffer.concat([tcpBuffer, chunk]);
   console.log(`RX: ${chunk.toString('hex')}`);
 
-  // Timeout zurücksetzen, da wir Daten bekommen haben. 
-  // Dies verhindert Timeouts, wenn die Antwort in mehreren kleinen Paketen kommt.
-  clearTimeout(responseTimeoutId);
-  responseTimeoutId = setTimeout(() => {
-    // Wenn keine weiteren Daten mehr kommen (2 Sekunden Stille), ist die Antwort komplett.
-    processResponse();
-  }, 1000); // 1 Sekunde Wartezeit nach dem letzten Byte für Abschluss
+  drainFrames();
+  if (receivedFrames.length > 0) {
+    finish(processResponse());
+  }
 });
 
 sock.on('error', (e) => {
   console.log(`\n✗ Socket-Fehler: ${e.message}`);
-  clearTimeout(responseTimeoutId);
-  process.exit(1);
+  finish(1);
 });
 
 // Falls der Server die Verbindung ohne Daten schließt
 sock.on('end', () => {
-  if (!responseTimeoutId || receivedBuffer.length > 0) {
-    // Wenn wir bereits eine Timeout-Logik aktiv haben, ignorieren wir dies hier oft, 
-    // aber sicherheitshalber prüfen:
-    clearTimeout(responseTimeoutId);
-    processResponse();
-  }
+  drainFrames();
+  finish(processResponse());
 });
 
 function listMotors() {
