@@ -1,5 +1,5 @@
 // motor-control.js
-// Steuert Motoren per Name aus addresses.json
+// Steuert Motoren per Name aus addresses.json (Robuste TCP Version für Linux)
 // Verwendung: node motor-control.js "Arbeiten" runter
 
 import net from 'node:net';
@@ -12,8 +12,6 @@ const STATUS_CODES = {
   'runter': 0x02,
   'stop': 0x03
 };
-
-let lastDirection = null; // Track der letzten Fahrtrichtung
 
 // Einfacher Frame für HOCH/RUNTER (13 bytes, OpCode 0x01)
 function buildFrame(motorNr, status) {
@@ -94,20 +92,6 @@ function findMotor(motorName) {
   return null;
 }
 
-// Alle Motoren auflisten
-function listMotors() {
-  console.log('\nVerfügbare Motoren:\n');
-  for (const [spsName, spsData] of Object.entries(spsMap)) {
-    console.log(`${spsName}:`);
-    if (spsData.motors) {
-      for (const motorName of Object.keys(spsData.motors)) {
-        console.log(`  - ${motorName}`);
-      }
-    }
-  }
-  console.log('');
-}
-
 // Kommandozeilenargumente
 const motorName = process.argv[2];
 const command = process.argv[3];
@@ -115,10 +99,6 @@ const command = process.argv[3];
 if (!motorName || !command) {
   console.log('\nVerwendung:');
   console.log('  node motor-control.js <motor> <befehl>\n');
-  console.log('Beispiele:');
-  console.log('  node motor-control.js Arbeiten runter');
-  console.log('  node motor-control.js Wohnen_Ost hoch');
-  console.log('  node motor-control.js Schlafen_Sued stop\n');
   listMotors();
   process.exit(1);
 }
@@ -143,50 +123,99 @@ console.log(`\n${motor.spsName}: ${motor.motorName} → ${command.toUpperCase()}
 // Unterschiedliche Frames je nach Befehl
 let frame;
 if (command.toLowerCase() === 'stop') {
-  // STOP nutzt komplexes 27-Byte Format
   frame = buildStopFrame(motor.motorData.nr);
 } else {
-  // HOCH/RUNTER nutzen einfaches 13-Byte Format
   frame = buildFrame(motor.motorData.nr, status);
 }
 console.log(`TX: ${frame.toString('hex')}`);
 
 const sock = net.createConnection({ host: motor.spsData.host, port: motor.spsData.port });
 
-let responses = '';
-let responseReceived = false;
+// Buffer für die Antwort sammeln
+let receivedBuffer = [];
+let responseTimeoutId = null;
+
+/**
+ * Verarbeitet den gesammelten Puffer und beendet das Skript.
+ */
+function processResponse() {
+  // Alle gepufferten Daten zu einem Buffer zusammenfügen
+  const fullData = Buffer.concat(receivedBuffer);
+  const hexStr = fullData.toString('hex');
+
+  if (fullData.length === 0) {
+    console.log('\n✗ Timeout: Keine Antwort vom Motor empfangen.');
+  } else {
+    // Logik zur Analyse der Antwort basierend auf Hex-Strings
+    if (hexStr.includes('1503')) {
+      console.log('\n✗ Fehler 1503: Motor nicht konfiguriert');
+    } else if (hexStr.includes('0203400006') || hexStr.includes('0203400021')) {
+      console.log('\n✓ ERFOLG!');
+    } else {
+      console.log(`\n? Unbekannte Antwort: ${hexStr}`);
+    }
+  }
+
+  // Aufräumen und Beenden
+  sock.end();
+  process.exit(fullData.length > 0 && (hexStr.includes('0203400006') || hexStr.includes('0203400021')) ? 0 : 1);
+}
 
 sock.on('connect', () => {
+  console.log('Verbunden mit SPS...');
+  
+  // Starte einen Timeout, falls sofort keine Antwort kommt (z.B. bei sehr schnellen Motoren ohne Antwort)
+  // Oder setze ihn zurück, sobald Daten kommen.
+  responseTimeoutId = setTimeout(() => {
+    // Falls nach 2 Sekunden immer noch nichts da ist, gehe von Timeout aus
+    if (receivedBuffer.length === 0) {
+      processResponse(); // Führt zum Exit wegen leerem Buffer
+    }
+  }, 2000);
+
   sock.write(frame);
-  // Wait 1 second for response then close
-  setTimeout(() => {
-    sock.destroy();
-  }, 1000);
 });
 
-sock.on('data', (buf) => {
-  responses += buf.toString('hex');
-  console.log(`RX: ${buf.toString('hex')}`);
-  responseReceived = true;
+sock.on('data', (chunk) => {
+  // Daten sammeln
+  receivedBuffer.push(chunk);
+  
+  console.log(`RX: ${chunk.toString('hex')}`);
+
+  // Timeout zurücksetzen, da wir Daten bekommen haben. 
+  // Dies verhindert Timeouts, wenn die Antwort in mehreren kleinen Paketen kommt.
+  clearTimeout(responseTimeoutId);
+  responseTimeoutId = setTimeout(() => {
+    // Wenn keine weiteren Daten mehr kommen (2 Sekunden Stille), ist die Antwort komplett.
+    processResponse();
+  }, 1000); // 1 Sekunde Wartezeit nach dem letzten Byte für Abschluss
 });
 
 sock.on('error', (e) => {
-  console.log(`\n✗ Fehler: ${e.message}`);
+  console.log(`\n✗ Socket-Fehler: ${e.message}`);
+  clearTimeout(responseTimeoutId);
   process.exit(1);
 });
 
-sock.on('close', () => {
-  if (!responseReceived) {
-    console.log('\n✗ Keine Antwort vom Motor');
-    process.exit(1);
-  } else if (responses.includes('1503')) {
-    console.log('\n✗ Motor nicht konfiguriert (Fehler 1503)');
-    process.exit(1);
-  } else if (responses.includes('0203400006') || responses.includes('0203400021')) {
-    console.log('\n✓ ERFOLG!\n');
-    process.exit(0);
-  } else {
-    console.log('\n? Unbekannte Antwort\n');
-    process.exit(1);
+// Falls der Server die Verbindung ohne Daten schließt
+sock.on('end', () => {
+  if (!responseTimeoutId || receivedBuffer.length > 0) {
+    // Wenn wir bereits eine Timeout-Logik aktiv haben, ignorieren wir dies hier oft, 
+    // aber sicherheitshalber prüfen:
+    clearTimeout(responseTimeoutId);
+    processResponse();
   }
 });
+
+function listMotors() {
+  console.log('\nVerfügbare Motoren:\n');
+  for (const [spsName, spsData] of Object.entries(spsMap)) {
+    console.log(`${spsName}:`);
+    if (spsData.motors) {
+      for (const motorName of Object.keys(spsData.motors)) {
+        console.log(`  - ${motorName}`);
+      }
+    }
+  }
+  console.log('');
+}
