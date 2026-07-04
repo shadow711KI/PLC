@@ -581,7 +581,7 @@ function queryMotorStatus(motorNr: number, host: string, port: number): Promise<
 }
 
 const SPS_MAX_ATTEMPTS = Math.max(1, Number(process.env.SPS_MAX_ATTEMPTS ?? 2));
-const SPS_CONN_TIMEOUT_MS = Math.max(300, Number(process.env.SPS_CONN_TIMEOUT_MS ?? 1200));
+const SPS_CONN_TIMEOUT_MS = Math.max(200, Number(process.env.SPS_CONN_TIMEOUT_MS ?? 200));
 const SPS_RETRY_BASE_DELAY_MS = Math.max(50, Number(process.env.SPS_RETRY_BASE_DELAY_MS ?? 120));
 const SPS_POST_SEND_CLOSE_MS = Math.max(150, Number(process.env.SPS_POST_SEND_CLOSE_MS ?? 500));
 
