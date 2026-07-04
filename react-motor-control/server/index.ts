@@ -581,46 +581,67 @@ function queryMotorStatus(motorNr: number, host: string, port: number): Promise<
 }
 
 // Hilfsfunktion: Einzelnen Frame senden
-function sendFrame(frame: Buffer, host: string, port: number, label?: string): Promise<boolean> {
-    return new Promise((resolve) => {
-        let resolved = false;
-        const done = (val: boolean) => { if (!resolved) { resolved = true; resolve(val); } };
+async function sendFrame(frame: Buffer, host: string, port: number, label?: string): Promise<boolean> {
+    const maxAttempts = 3;
 
-        const socket = net.createConnection({ host, port });
-        let responseReceived = false;
+    const sendFrameOnce = (attempt: number): Promise<boolean> => {
+        return new Promise((resolve) => {
+            let resolved = false;
+            const done = (val: boolean) => {
+                if (!resolved) {
+                    resolved = true;
+                    resolve(val);
+                }
+            };
 
-        // Connection timeout: falls SPS nicht antwortet (wichtig für Ubuntu/Linux)
-        const connTimeout = setTimeout(() => {
-            console.error(`SPS connection timeout: ${host}:${port}`);
-            socket.destroy();
-            done(false);
-        }, 2000);
+            const socket = net.createConnection({ host, port });
+            let responseReceived = false;
 
-        socket.on('connect', () => {
-            clearTimeout(connTimeout);
-            const tag = label ? `${label} → ${host}:${port}` : `SPS ${host}:${port}`;
-            logTelegram('SEND', tag, frame.toString('hex'));
-            socket.write(frame);
-            setTimeout(() => socket.destroy(), 600);
+            // Connection timeout: falls SPS nicht antwortet (wichtig fuer Ubuntu/Linux)
+            const connTimeout = setTimeout(() => {
+                console.error(`SPS connection timeout (attempt ${attempt}/${maxAttempts}): ${host}:${port}`);
+                socket.destroy();
+                done(false);
+            }, 2000);
+
+            socket.on('connect', () => {
+                clearTimeout(connTimeout);
+                const tag = label ? `${label} → ${host}:${port}` : `SPS ${host}:${port}`;
+                logTelegram('SEND', tag, frame.toString('hex'));
+                socket.write(frame);
+                setTimeout(() => socket.destroy(), 700);
+            });
+
+            socket.on('data', (data) => {
+                responseReceived = true;
+                const tag = label ? `${label} → ${host}:${port}` : `SPS ${host}:${port}`;
+                logTelegram('RECV', tag, data.toString('hex'));
+            });
+
+            socket.on('error', (err) => {
+                clearTimeout(connTimeout);
+                console.error(`SPS connection error (attempt ${attempt}/${maxAttempts}):`, err.message);
+                done(false);
+            });
+
+            socket.on('close', () => {
+                clearTimeout(connTimeout);
+                done(responseReceived);
+            });
         });
+    };
 
-        socket.on('data', (data) => {
-            responseReceived = true;
-            const tag = label ? `${label} → ${host}:${port}` : `SPS ${host}:${port}`;
-            logTelegram('RECV', tag, data.toString('hex'));
-        });
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        const success = await sendFrameOnce(attempt);
+        if (success) {
+            return true;
+        }
+        if (attempt < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 150 * attempt));
+        }
+    }
 
-        socket.on('error', (err) => {
-            clearTimeout(connTimeout);
-            console.error('SPS connection error:', err.message);
-            done(false);
-        });
-
-        socket.on('close', () => {
-            clearTimeout(connTimeout);
-            done(responseReceived);
-        });
-    });
+    return false;
 }
 
 // Sende Befehl an SPS
