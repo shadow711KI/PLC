@@ -86,20 +86,21 @@ function parseZeitautomatikResponse(buffer: Buffer) {
 
             const bytes = dataFrame.slice(offset, offset + 4);
 
-            // 4 bytes als 32-Bit-Wert zusammensetzen (Big Endian)
-            const value = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
+            // 4 bytes als 32-Bit-Wert zusammensetzen (Big Endian, unsigned)
+            // Wichtig: Werte beginnen oft mit 0x80..., daher darf kein signed shift entstehen.
+            const value = (((bytes[0] << 24) >>> 0) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3]) >>> 0;
 
             // Bit 0: Aktion (1 = hoch, 0 = runter)
             const aktion = value & 0x1;
 
             // Bit 1-6: Minute (6 Bit)
-            const minute = (value >> 1) & 0x3F;
+            const minute = (value >>> 1) & 0x3F;
 
             // Bit 7-11: Stunde (5 Bit)
-            const stunde = (value >> 7) & 0x1F;
+            const stunde = (value >>> 7) & 0x1F;
 
             // Bit 12-18: Wochentage (7 Bit)
-            const wochentage = (value >> 12) & 0x7F;
+            const wochentage = (value >>> 12) & 0x7F;
 
             // Wochentage extrahieren (Bit 18=Sa, 17=Fr, 16=Do, 15=Mi, 14=Di, 13=Mo, 12=So)
             const sa = !!(wochentage & 0x40); // Bit 18
@@ -585,6 +586,14 @@ const SPS_CONN_TIMEOUT_MS = Math.max(200, Number(process.env.SPS_CONN_TIMEOUT_MS
 const SPS_RETRY_BASE_DELAY_MS = Math.max(50, Number(process.env.SPS_RETRY_BASE_DELAY_MS ?? 120));
 const SPS_POST_SEND_CLOSE_MS = Math.max(150, Number(process.env.SPS_POST_SEND_CLOSE_MS ?? 500));
 
+// Gruppensteuerung braucht auf Ubuntu/Linux oft tolerant(er)e Netz-Parameter.
+const GROUPS_MAX_ATTEMPTS = Math.max(1, Number(process.env.GROUPS_MAX_ATTEMPTS ?? 4));
+const GROUPS_CONN_TIMEOUT_MS = Math.max(300, Number(process.env.GROUPS_CONN_TIMEOUT_MS ?? 1200));
+const GROUPS_RETRY_BASE_DELAY_MS = Math.max(80, Number(process.env.GROUPS_RETRY_BASE_DELAY_MS ?? 500));
+const GROUPS_POST_SEND_CLOSE_MS = Math.max(200, Number(process.env.GROUPS_POST_SEND_CLOSE_MS ?? 900));
+const GROUPS_INTER_COMMAND_DELAY_MS = Math.max(100, Number(process.env.GROUPS_INTER_COMMAND_DELAY_MS ?? 900));
+const GROUPS_REFUSED_RETRY_DELAY_MS = Math.max(200, Number(process.env.GROUPS_REFUSED_RETRY_DELAY_MS ?? 1200));
+
 // Hilfsfunktion: Einzelnen Frame senden
 async function sendFrame(frame: Buffer, host: string, port: number, label?: string): Promise<boolean> {
     const maxAttempts = SPS_MAX_ATTEMPTS;
@@ -652,6 +661,74 @@ async function sendFrame(frame: Buffer, host: string, port: number, label?: stri
 // Sende Befehl an SPS
 function sendCommandToSPS(host: string, port: number, frame: Buffer, label?: string): Promise<boolean> {
     return sendFrame(frame, host, port, label);
+}
+
+// Gruppensteuerung nutzt robustere Timeout-/Retry-Werte, um Timeout-Spitzen unter Ubuntu zu reduzieren.
+async function sendGroupCommandToSPS(host: string, port: number, frame: Buffer, label?: string): Promise<boolean> {
+    const maxAttempts = GROUPS_MAX_ATTEMPTS;
+
+    const sendFrameOnce = (attempt: number): Promise<boolean> => {
+        return new Promise((resolve) => {
+            let resolved = false;
+            const done = (val: boolean) => {
+                if (!resolved) {
+                    resolved = true;
+                    resolve(val);
+                }
+            };
+
+            const socket = net.createConnection({ host, port });
+            let responseReceived = false;
+
+            const connTimeout = setTimeout(() => {
+                console.error(`GROUP timeout (attempt ${attempt}/${maxAttempts}): ${host}:${port}`);
+                socket.destroy();
+                done(false);
+            }, GROUPS_CONN_TIMEOUT_MS);
+
+            socket.on('connect', () => {
+                clearTimeout(connTimeout);
+                const tag = label ? `${label} → ${host}:${port}` : `SPS ${host}:${port}`;
+                logTelegram('SEND', tag, frame.toString('hex'));
+                socket.write(frame);
+                setTimeout(() => socket.destroy(), GROUPS_POST_SEND_CLOSE_MS);
+            });
+
+            socket.on('data', (data) => {
+                responseReceived = true;
+                const tag = label ? `${label} → ${host}:${port}` : `SPS ${host}:${port}`;
+                logTelegram('RECV', tag, data.toString('hex'));
+            });
+
+            socket.on('error', (err: NodeJS.ErrnoException) => {
+                clearTimeout(connTimeout);
+                console.error(`GROUP socket error (attempt ${attempt}/${maxAttempts}):`, err.message);
+                // SPS kann unter Last kurzzeitig neue Verbindungen ablehnen.
+                if (err.code === 'ECONNREFUSED') {
+                    setTimeout(() => done(false), GROUPS_REFUSED_RETRY_DELAY_MS);
+                    return;
+                }
+                done(false);
+            });
+
+            socket.on('close', () => {
+                clearTimeout(connTimeout);
+                done(responseReceived);
+            });
+        });
+    };
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        const success = await sendFrameOnce(attempt);
+        if (success) {
+            return true;
+        }
+        if (attempt < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, GROUPS_RETRY_BASE_DELAY_MS * attempt));
+        }
+    }
+
+    return false;
 }
 
 // Hilfsfunktion: Antipp-Frame für Lamellen-Steuerung (nutzt SPS Antippzeit-Register)
@@ -1067,10 +1144,10 @@ app.post('/api/groups/control', async (req: Request, res: Response) => {
                 results[motor] = { success: false, message: 'Ungültige Aktion' };
                 continue;
             }
-            const success = await sendCommandToSPS(spsData.host, spsData.port, frame, `Motor ${technicalMotor}`);
+            const success = await sendGroupCommandToSPS(spsData.host, spsData.port, frame, `Motor ${technicalMotor}`);
             results[motor] = { success, message: success ? 'Befehl gesendet' : 'Keine Antwort von SPS' };
-            // 200ms Pause zwischen den Motoren (erhöht von 50ms für Ubuntu/Linux-Kompatibilität)
-            await new Promise(resolve => setTimeout(resolve, 200));
+            // Konfigurierbare Pause zwischen den Motoren, reduziert Lastspitzen auf Ubuntu/Linux.
+            await new Promise(resolve => setTimeout(resolve, GROUPS_INTER_COMMAND_DELAY_MS));
         }
         return res.json({ success: true, results });
     } catch (error) {
