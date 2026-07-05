@@ -28,7 +28,7 @@ const getRoomIcon = (roomName: string): string => {
 // onAction and onGroupAction props still needed from App.tsx for motor commands
 interface RoomsProps {
   onAction: (motor: Motor, action: 'up' | 'down' | 'stop' | 'lamellen_open' | 'lamellen_close') => void
-  onGroupAction: (motors: Motor[], action: 'up' | 'down' | 'stop' | 'lamellen_open' | 'lamellen_close') => void
+  onGroupAction: (groupName: string, motors: Motor[], action: 'up' | 'down' | 'stop' | 'lamellen_open' | 'lamellen_close') => void
 }
 
 function Rooms({ onAction, onGroupAction }: RoomsProps) {
@@ -319,7 +319,7 @@ function Rooms({ onAction, onGroupAction }: RoomsProps) {
           <div className="group-controls">
             <button
               className="group-btn group-btn-up"
-              onClick={() => onGroupAction(currentGroup.motors, 'up')}
+              onClick={() => onGroupAction(currentGroup.name, currentGroup.motors, 'up')}
               disabled={isLoading}
               title="Alle Fenster hochfahren"
               aria-label="Alle Fenster hochfahren"
@@ -331,7 +331,7 @@ function Rooms({ onAction, onGroupAction }: RoomsProps) {
 
             <button
               className="group-btn group-btn-down"
-              onClick={() => onGroupAction(currentGroup.motors, 'down')}
+              onClick={() => onGroupAction(currentGroup.name, currentGroup.motors, 'down')}
               disabled={isLoading}
               title="Alle Fenster runterfahren"
               aria-label="Alle Fenster runterfahren"
@@ -343,7 +343,7 @@ function Rooms({ onAction, onGroupAction }: RoomsProps) {
 
             <button
               className="group-btn group-btn-lamellen-open"
-              onClick={() => onGroupAction(currentGroup.motors, 'lamellen_open')}
+              onClick={() => onGroupAction(currentGroup.name, currentGroup.motors, 'lamellen_open')}
               disabled={isLoading}
               title="Alle Lamellen öffnen"
               aria-label="Alle Lamellen öffnen"
@@ -355,7 +355,7 @@ function Rooms({ onAction, onGroupAction }: RoomsProps) {
 
             <button
               className="group-btn group-btn-stop"
-              onClick={() => onGroupAction(currentGroup.motors, 'stop')}
+              onClick={() => onGroupAction(currentGroup.name, currentGroup.motors, 'stop')}
               disabled={isLoading}
               title="Alle Fenster stoppen"
               aria-label="Alle Fenster stoppen"
@@ -367,7 +367,7 @@ function Rooms({ onAction, onGroupAction }: RoomsProps) {
 
             <button
               className="group-btn group-btn-lamellen-close"
-              onClick={() => onGroupAction(currentGroup.motors, 'lamellen_close')}
+              onClick={() => onGroupAction(currentGroup.name, currentGroup.motors, 'lamellen_close')}
               disabled={isLoading}
               title="Alle Lamellen schließen"
               aria-label="Alle Lamellen schließen"

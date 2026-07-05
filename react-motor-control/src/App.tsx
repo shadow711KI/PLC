@@ -209,7 +209,7 @@ function App() {
   }, [setIsLoading, setErrorMessage, setMotors])
 
   // Memoized to prevent unnecessary re-renders of child components
-  const handleGroupAction = useCallback(async (groupMotors: Motor[], action: 'up' | 'down' | 'stop' | 'lamellen_open' | 'lamellen_close') => {
+  const handleGroupAction = useCallback(async (groupName: string, _groupMotors: Motor[], action: 'up' | 'down' | 'stop' | 'lamellen_open' | 'lamellen_close') => {
     const actionMap = {
       up: 'hoch',
       down: 'runter',
@@ -222,29 +222,27 @@ function App() {
     setErrorMessage(null)
 
     try {
-      // Sende Befehle nacheinander an alle Motoren in der Gruppe
-      for (const motor of groupMotors) {
-        const spsInfo = spsMapping[motor.sps]
-        const result = await sendMotorCommand({
-          motor: motor.technicalName,
-          action: actionMap[action],
-          sps: spsInfo.host,
-          port: spsInfo.port,
+      const response = await fetch(`${API_BASE_URL}/api/groups/control`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ groupName, action: actionMap[action] }),
+      })
+
+      const data = await response.json()
+      if (!data.success) {
+        setErrorMessage(`Fehler bei Gruppe ${groupName}: ${data.message || 'Unbekannter Fehler'}`)
+      } else if (data.results && typeof data.results === 'object') {
+        const firstFailed = Object.entries(data.results).find(([, value]) => {
+          const result = value as { success?: boolean }
+          return result.success === false
         })
-
-        if (result.success && result.motorStatus) {
-          // Aktualisiere Status von Server-Response
-          setMotors(prev => prev.map(m => ({
-            ...m,
-            status: result.motorStatus?.[m.name] || m.status
-          })))
-        } else if (!result.success) {
-          setErrorMessage(`Fehler bei ${motor.displayName}: ${result.message}`)
-          break // Stoppe bei Fehler
+        if (firstFailed) {
+          const [motorName, value] = firstFailed
+          const failed = value as { message?: string }
+          setErrorMessage(`Fehler bei ${motorName}: ${failed.message || 'Keine Antwort von SPS'}`)
         }
-
-        // Kurze Pause zwischen den Befehlen (100ms)
-        await new Promise(resolve => setTimeout(resolve, 100))
       }
     } catch (error) {
       setErrorMessage('Verbindung zum Server fehlgeschlagen')
